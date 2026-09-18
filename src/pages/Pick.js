@@ -1,0 +1,396 @@
+import React from 'react';
+import styled from 'styled-components';
+import { Link } from 'react-router-dom';
+import { useRef, useState } from 'react';
+import { Swiper, SwiperSlide } from "swiper/react";
+import "swiper/css";
+import 'swiper/css/navigation';
+import { Navigation, Autoplay } from 'swiper/modules';
+import Tab from '../components/Tab';
+import productData from '../data/productData';
+
+
+export default function Pick() {
+ 
+  const {category, products} = productData;
+
+  const [showSubTab, setShowSubTab] = useState('single');
+  const filteredProducts = showSubTab === 'all' ? [...products] : products.filter(product => product.category && product.category.includes(showSubTab));
+
+
+  const [sortType, setSortType] = useState('sales');
+  const sortProducts = filteredProducts.sort((a, b) => {
+    if(sortType === 'new'){ return new Date(b.date) - new Date(a.date);}
+    if(sortType === 'sales'){return b.sales - a.sales;}
+    if(sortType === 'highPrice') { return b.price - a.price;}
+    if(sortType === 'lowPrice'){return a.price - b.price;}
+    return 0;
+  })
+
+
+  const [moreCount, setMoreCount] = useState(18);
+  const handleTabChange = (tabId) => {
+    setShowSubTab(tabId);
+    setMoreCount(18);
+  };
+  const displayedProducts = sortProducts.slice(0, moreCount);
+
+
+  const Wrap = styled.div`
+    width: 1280px;
+    margin: 0 auto;
+  `
+  const Title = styled.div`
+    font-size: 40px;
+    font-weight: 700;
+    margin-bottom: 30px;
+    line-height: 48px;
+    margin-top: 50px;
+  `
+  const TabWidth = styled.div`
+    margin-bottom: 60px;
+  `
+
+  const FilterRow = styled.div`
+    display: flex;
+    justify-content: space-between; 
+    margin-bottom: 30px;   
+  `
+  const TotalCount = styled.div`
+    font-size: 14px;
+    font-weight: 400;
+  `
+  const SortButtons = styled.div`
+    display: flex;
+  `
+  const SortBtn = styled.button`
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: ${(props) => props.$isActive ? '500' : '400'};
+    color: ${(props) => props.$isActive ? '#161D24' : '#999'};
+    transition: all 0.2s;
+
+    ${(props) => !props.$isActive && `
+      &:hover {
+        color: #161D24;
+        font-weight: 500;
+      }
+    `}             
+    ${(props) => props.$isActive && `
+      &:hover {
+        color: #161D24;
+        font-weight: 500;
+      }
+    `}
+  `
+  const Line = styled.div`
+    color: #999;
+    margin: 0 6px;
+    font-size: 14px;
+    font-weight: 300;
+  `
+
+  const ProductList = styled.div`
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 40px 10px;
+    margin-bottom: 100px;
+  `
+  const ProductCard = styled(Link)`
+    text-decoration: none;
+    color: #161D24;
+  `
+  const ImageBox = styled.div`
+    margin-bottom: 10px;
+    position: relative;
+    border-radius: 3px;
+  `
+  const ImageBoxImg = styled.img`
+    border-radius: 3px;
+  `
+  const WishBtn = styled.button`
+    position: absolute;
+    bottom: 10px; right: 10px;
+    background-color: rgba(22, 29, 36, 0.2);
+    width: 36px; height: 36px;
+    border-radius: 50px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: rgba(22, 29, 36, 0.5);
+    }
+  `
+  const WishBtnImg = styled.img`
+    width: 18px;
+    display: inline-block;
+  `
+  const CartBtnImg = styled.img`
+    width: 17px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-right: 6px;
+    opacity: 0.7;
+    transition: all 0.2s;
+  `
+  const CartBtn = styled.button`
+    width: 100%; height: 35px;
+    line-height: 35px;
+    border: 1px solid #ddd;
+    font-size: 16px;
+    color: #666;
+    font-weight: 400;
+    border-radius: 3px;
+    margin-bottom: 10px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #161D24;
+      font-weight: 500;
+      border: 1px solid #161D24;
+
+      ${CartBtnImg} {
+        opacity: 1;
+      }
+    }
+  `
+  const ProdTitle = styled.p`
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    line-height: 22px;
+    height: 44px;
+  `
+  const ProdPrice = styled.p`
+    font-size: 20px;
+    font-weight: 700;
+    margin-bottom: 12px;
+    line-height: 22px;
+    display: flex;
+    align-items: center;
+  `
+  const NewBadge = styled.span`
+    background-color: #fff;
+    border: 1px solid #E60012;
+    box-sizing: border-box;
+    margin-left: 10px;
+    padding: 4px 6px;
+    border-radius: 2px;
+    color: #E60012;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0;
+    line-height: 12px;
+  `
+  const TagRow = styled.div`
+    display: flex;
+  `
+  const TagNum = styled.span`
+    background-color: #eee;
+    margin-right: 5px;
+    padding: 4px 6px;
+    border-radius: 2px;
+    color: #666;
+    font-size: 12px;
+    font-weight: 400;
+    margin-bottom: 0;
+    line-height: 12px;
+  `
+  const MoreBtnBox = styled.div`
+    display: flex;
+    justify-content: center;
+    margin-bottom: 120px;
+  `
+  const MoreBtn = styled.button`
+    display: block;
+    font-size: 16px;
+    font-weight: 400;
+    color: #666;
+    border: 1px solid #ddd;
+    box-sizing: border-box;
+    background-color: #fff;
+    width: 205px; height: 45px;
+    text-align: center;
+    line-height: 45px;
+    border-radius: 3px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #161D24;
+      color: #fff;
+      border: 1px solid #161D24;
+    }
+  `
+
+  const MySwiper = styled(Swiper)`
+    width: 100%;
+    height: 100%;
+    margin-bottom: 50px;
+
+    .swiper-button-prev {
+      left: 2%; 
+    }
+    .swiper-button-next {
+      right: 2%; 
+    }
+    .swiper-button-prev,
+    .swiper-button-next {
+      background-color: rgba(22, 29, 36, 0.4);
+      border-radius: 50px;
+      width: 60px; height: 60px;
+      transition: all 0.2s;
+
+      svg {
+        width: 17px;
+        color: white;
+        padding-left: 4px;
+      }
+      &:hover {
+        background-color: rgba(22, 29, 36, 0.6);
+      }
+    }
+  `
+  const Slides = styled(SwiperSlide)`
+    width: 420px !important;
+    height: 440px !important;
+    position: relative;
+
+    img {
+      display: block;
+      width: 100%;
+      height: auto;
+      border-radius: 5px;
+    }
+  `
+  const Txt = styled.div`
+    position: absolute;
+    bottom: 30px; left: 30px;
+  `
+  const FirstP = styled.p`
+    font-size: 30px;
+    font-weight: 700;
+    line-height: 38px;
+    color: #161D24;
+    margin-bottom: 0;
+  `
+
+  return (
+    <Wrap>
+      <Title>카테고리 랭킹</Title>
+      <TabWidth>
+        <Tab
+          data={category}
+          activeTab={showSubTab}
+          setActiveTab={handleTabChange}
+        />
+      </TabWidth>
+      <MySwiper 
+      navigation={true}
+      modules={[Navigation, Autoplay]}
+      spaceBetween={10}
+      slidesPerGroup={1}  
+      slidesPerView={'auto'}
+      autoplay={{delay: 4000, disableOnInteraction: false}}
+      speed={1000}
+      loop={true}>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_01.jpg'} />
+          <Txt>
+            <FirstP>자취러를 위한<br/>다이소 자취 필수템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_02.jpg'} />
+          <Txt>
+            <FirstP>분위기를 완성해줄<br/>집꾸미기 아이템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_03.jpg'} />
+          <Txt>
+            <FirstP>편리함 UP<br/>다이소 생활꿀템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_04.jpg'} />
+          <Txt>
+            <FirstP>다이소의<br/>인기있는 아이템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_01.jpg'} />
+          <Txt>
+            <FirstP>자취러를 위한<br/>다이소 자취 필수템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_02.jpg'} />
+          <Txt>
+            <FirstP>분위기를 완성해줄<br/>집꾸미기 아이템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_03.jpg'} />
+          <Txt>
+            <FirstP>편리함 UP<br/>다이소 생활꿀템</FirstP>
+          </Txt>
+        </Slides>
+        <Slides>
+          <img src={process.env.PUBLIC_URL + '/images/pickbg_04.jpg'} />
+          <Txt>
+            <FirstP>다이소의<br/>인기있는 아이템</FirstP>
+          </Txt>
+        </Slides>
+      </MySwiper>
+      <FilterRow>
+        <TotalCount>
+          총 {sortProducts.length}건
+        </TotalCount>
+        <SortButtons>
+          <SortBtn $isActive={sortType === 'new'} onClick={()=>{setSortType('new')}}>신상품순</SortBtn>
+          <Line>ㅣ</Line>
+          <SortBtn $isActive={sortType === 'sales'} onClick={()=>{setSortType('sales')}}>판매량순</SortBtn>
+          <Line>ㅣ</Line>
+          <SortBtn $isActive={sortType === 'highPrice'} onClick={()=>{setSortType('highPrice')}}>높은 가격순</SortBtn>
+          <Line>ㅣ</Line>
+          <SortBtn $isActive={sortType === 'lowPrice'} onClick={()=>{setSortType('lowPrice')}}>낮은 가격순</SortBtn>
+        </SortButtons>
+      </FilterRow>
+      <ProductList>
+        {displayedProducts.map((product)=>{
+          const isRecent = (new Date() - new Date(product.date)) < (30 * 24 * 60 * 60 * 1000);
+          return (
+            <ProductCard to={`/product/${product.id}`} key={product.id}>
+              <ImageBox>
+                <ImageBoxImg src={product.image} alt={product.title} />
+                <WishBtn onClick={(e)=>e.preventDefault()}>
+                  <WishBtnImg src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
+                </WishBtn>
+              </ImageBox>
+              <CartBtn onClick={(e)=>e.preventDefault()}>
+                <CartBtnImg src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기' />담기
+              </CartBtn>
+              <div>
+                <ProdTitle>{product.title}</ProdTitle>
+                <ProdPrice>
+                  {product.price.toLocaleString()}원
+                  {isRecent && <NewBadge>NEW</NewBadge>}
+                </ProdPrice>
+                <TagRow>
+                  {product.tags && product.tags.map((tag, index)=> (
+                    <TagNum key={index}>{tag}</TagNum>
+                  ))}
+                </TagRow>
+              </div>
+            </ProductCard>
+          );
+        })}
+      </ProductList>
+      <MoreBtnBox>
+        {moreCount < sortProducts.length && (
+          <MoreBtn onClick={()=>setMoreCount(prev => prev + 18)}>더보기</MoreBtn>
+        )}
+      </MoreBtnBox>
+    </Wrap>
+  )
+}
