@@ -78,6 +78,7 @@ function App() {
           </Navbar>
         </div>
       </header>
+      <Home />
       <Routes>
         <Route path='/' element={<Home />} />
         <Route path='category' element={<Category />} />
