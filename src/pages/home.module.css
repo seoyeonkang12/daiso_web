@@ -255,7 +255,7 @@ button {
   font-weight: 700;
   line-height: 36px;
   margin-bottom: 0;
-  white-space: pre-wrap;
+  white-space: pre-line;
 }
 .pickFlex .leftBanner:hover .moreBtn {
   opacity: 1;

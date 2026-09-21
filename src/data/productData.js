@@ -250,6 +250,77 @@ const productData = {
       date: '2026-08-05',
       sales: 5498,
       inventory: 156,
+      likes: 9999,
+      shares: 3376,
+
+      mainImg: process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg',
+      subImages: [
+        process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg', 
+        process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg', 
+        process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg'
+      ],
+      detailImages: [
+        process.env.PUBLIC_URL + '/images/detailImg_01.jpg',
+        process.env.PUBLIC_URL + '/images/detailImg_02.jpg',
+        process.env.PUBLIC_URL + '/images/detailImg_03.jpg',
+        process.env.PUBLIC_URL + '/images/detailImg_04.jpg',
+      ],
+      reviews: [
+        {
+          reviewId: 1,
+          userId: 'kim123',
+          rating: 5,
+          content: '기미가 생겨서 요즘 피부가 많이 신경 쓰였는데, 꾸준히 관리해보려고 구매했어요. 간편하게 챙길 수 있어 부담 없이 사용하기 좋네요. 꾸준히 바르면서 피부 고민에 좋은 효과가 있었으면 좋겠습니다.',
+          date: '2026-09-13',
+          reviewImgs: [
+            process.env.PUBLIC_URL + '/images/reviewImgs_01.jpg',
+            process.env.PUBLIC_URL + '/images/reviewImgs_02.jpg',
+            process.env.PUBLIC_URL + '/images/reviewImgs_03.jpg',
+          ],
+        },
+        {
+          reviewId: 2,
+          userId: 'skincare_love',
+          rating: 5,
+          content: '동결건조 앰플이라 그런지 확실히 신선하고 영양감이 가득한 느낌이에요. 비타민 제품인데도 자극이나 따가움 전혀 없이 피부에 쫀쫀하게 잘 흡수됩니다! 일주일 정도 아침저녁으로 꾸준히 발랐더니 칙칙했던 안색이 확실히 맑아진 게 눈에 보여요.',
+          date: '2026-09-15',
+          reviewImgs: [
+            process.env.PUBLIC_URL + '/images/reviewImgs_04.jpg',
+          ],
+        },
+        {
+          reviewId: 3,
+          userId: 'daiso_holic',
+          rating: 4,
+          content: 'SNS에서 가성비 대박이라고 난리 나서 동네 다이소 재고 조회해 보고 겨우 구해왔습니다ㅋㅋ 5000원에 이 정도 퀄리티면 진짜 훌륭하네요. 약간의 끈적임은 남지만 밤에 듬뿍 바르고 자면 다음 날 화장이 엄청 잘 먹어서 대만족입니다!',
+          date: '2026-09-16',
+          reviewImgs: [
+            process.env.PUBLIC_URL + '/images/reviewImgs_05.jpg',
+            process.env.PUBLIC_URL + '/images/reviewImgs_06.jpg',
+          ],
+        },
+        {
+          reviewId: 4,
+          userId: 'pure_glow',
+          rating: 5,
+          content: '엄마 기미 잡티 고민 때문에 선물해 드렸는데 너무 좋아하십니다. 키트 형태로 직접 섞어 쓰니까 위생적이고 더 신뢰가 간다고 하시네요. 제형이 무겁지 않고 촉촉해서 나이대 상관없이 데일리로 쓰기 아주 좋습니다. 다 쓰면 또 사다 드리려고요.',
+          date: '2026-09-17',
+          reviewImgs: [
+            process.env.PUBLIC_URL + '/images/reviewImgs_07.jpg',
+            process.env.PUBLIC_URL + '/images/reviewImgs_08.jpg',
+          ],
+        },
+        {
+          reviewId: 5,
+          userId: 'user_review9',
+          rating: 3,
+          content: '효과는 잡티가 살짝 옅어지는 것 같고 안색도 밝아져서 만족스러운데, 생각보다 용량이 너무 적어서 금방 쓰네요ㅠㅠ 효과를 제대로 보려면 한 번에 여러 개 쟁여두고 계속 이어서 써야 할 것 같아요. 제품 자체는 순하고 좋습니다.',
+          date: '2026-09-18',
+          reviewImgs: [
+            process.env.PUBLIC_URL + '/images/reviewImgs_09.jpg',
+          ],
+        }
+      ]
     },
     {
       id: 20,

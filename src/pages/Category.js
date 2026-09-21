@@ -21,7 +21,7 @@ export default function Category() {
     if(sortType === 'highPrice') { return b.price - a.price;}
     if(sortType === 'lowPrice'){return a.price - b.price;}
     return 0;
-  })
+  });
 
 
   const [moreCount, setMoreCount] = useState(24);

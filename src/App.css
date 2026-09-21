@@ -62,7 +62,35 @@ img {display: block; width: 100%; height: auto;}
 }
 .App .header_top .header_right {
   display: flex;
+  align-items: center;
 }
+.header_right .welcome {
+  color: #666;
+  font-size: 14px;
+  font-weight: 400;
+  margin-top: 3px;
+}
+.header_right .txtLine {
+  color: #666;
+  font-size: 14px;
+  margin: 0 5px;
+  margin-top: 3px;
+  font-weight: 400;
+}
+.header_right .logoutBtn {
+  font-size: 14px;
+  color: #666;
+  font-weight: 400;
+  margin-right: 5px;
+  margin-top: 3px;
+  transition: all 0.2s;
+}
+.header_right .logoutBtn:hover {
+  color: #161D24;
+  font-weight: 600;
+}
+
+
 .header .navbar {
   height: 50px;
   background-color: #fff !important;

@@ -11,7 +11,7 @@ import Login from './pages/Login';
 import Cart from './pages/Cart';
 import About from './pages/About';
 
-import { Routes, Route, Link, NavLink, useLocation } from 'react-router-dom';
+import { Routes, Route, Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
 
 import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -21,6 +21,7 @@ import ProductDetail from './pages/ProductDetail';
 function App() {
 
   const { pathname } = useLocation();
+  const navigate = useNavigate();
 
   useEffect(()=>{
     window.scrollTo(0, 0);
@@ -31,6 +32,15 @@ function App() {
       top: 0,
       behavior: 'smooth'
     });
+  };
+
+  const InUser = sessionStorage.getItem('userName');
+  const handleLogout = () => {
+    if(window.confirm('로그아웃 하시겠습니까?')) {
+      sessionStorage.removeItem('userName');
+      alert('로그아웃 되었습니다.');
+      navigate('/');
+    }
   };
 
 
@@ -54,7 +64,17 @@ function App() {
                 </Form>
               </div>
               <div className='header_right'>
-                <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
+                {InUser ? (
+                  <>
+                    <span className='welcome'>
+                      <strong className='strongRed'>{InUser}</strong>님
+                    </span>
+                    <div className='txtLine'>ㅣ</div>
+                    <button type='button' className='logoutBtn' onClick={handleLogout}>로그아웃</button>
+                    <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
+                  </>) : (
+                    <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
+                  )}
                 <NavLink className='heart' to='/heart'><img src={process.env.PUBLIC_URL + '/images/heart.png'} alt='heart_img' /></NavLink>
                 <NavLink className='shopping' to='/cart'><img src={process.env.PUBLIC_URL + '/images/shopping.png'} alt='shopping_img' /></NavLink>
               </div>
