@@ -3,6 +3,7 @@ import { useState, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import productData from '../data/productData';
+import Accordion from 'react-bootstrap/Accordion';
 
 
 const DeliveryOptions = [
@@ -24,12 +25,13 @@ export default function ProductDetail() {
   const product = productData.products?.find((item) => item.id === parseInt(id));
 
   const [quantity, setQuantity] = useState(1);
-  const [selectedImg, setSelectedImg] = useState(product?.mainImg || '');
+  const [selectedImg, setSelectedImg] = useState(product?.mainImg || product?.subImages?.[0] || '');
+  const [activeTab, setActiveTab] = useState('detail');
   const [deliveryType, setDeliveryType] = useState('택배');
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [sortBy, setSortBy] = useState('recent');
+  const [sortBy, setSortBy] = useState('highRating');
   const [nowPage, setNowPage] = useState(1);
-  const reviewPerPage = 5;
+  const reviewPerPage = 3;
   
   if(!product) return <div>상품을 찾을 수 없습니다.</div>;
 
@@ -46,11 +48,14 @@ export default function ProductDetail() {
     }
   };
 
-  const scrollToSection = (elementRef) => {
-    window.scrollTo({
-      top: elementRef.current.offsetTop - 40,
-      behavior: 'smooth',
-    });
+  const handleTabClick = (elementRef, tabName) => {
+    setActiveTab(tabName);
+    if(elementRef.current) {
+      window.scrollTo({
+        top: elementRef.current.offsetTop - 58,
+        behavior: 'smooth',
+      });
+    }
   };
 
   const allReviewImages = product.reviews ? product.reviews.reduce((acc, review) => {
@@ -80,6 +85,22 @@ export default function ProductDetail() {
     if(userId.length <= 3) return userId + '****';
     return userId.slice(0, 3) + '****';
   }
+
+  const lastReview = nowPage + reviewPerPage;
+  const firstReview = lastReview - reviewPerPage;
+
+  const cutReviews = sortedReviews.slice(firstReview, lastReview);
+  const totalPages = Math.ceil(sortedReviews.length / reviewPerPage);
+
+  const PageNumbers = [];
+  for(let i=1; i<=totalPages; i++){
+    PageNumbers.push(i);
+  }
+  const handleSortChange = (type) => {
+    setSortBy(type);
+    setNowPage(1);
+  };
+
   
   const Wrap = styled.div`
     width: 1280px;
@@ -105,20 +126,33 @@ export default function ProductDetail() {
     margin-right: 10px;
   `
   const SubImg = styled.img`
-    width: 61px;
-    margin-bottom: 10px;
+    width: 61px; height: 74px;
+    object-fit: cover;
+    margin-bottom: 8px;
     border-radius: 3px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: all 0.2s;
+
+    border: 1px solid ${(props) => props.$isActive ? '#161D24' : '#fff'};
+    &:hover {
+      border: 1px solid #161D24;
+    }
   `
   const MainImg = styled.img`
     width: 100%; height: 600px;
+    object-fit: cover;
     border-radius: 6px;
   `  
   const TabMenu = styled.div`
     display: flex;
     width: 100%;
+    background-color: #fff;
     border-bottom: 1px solid #ccc;
     margin-bottom: 30px;
-    margin-top: 120px;
+    position: sticky;
+    top: 0;
+    z-index: 99;
   `
   const TabBtn = styled.button`
     flex-grow: 1;
@@ -127,8 +161,10 @@ export default function ProductDetail() {
     border: none;
     font-size: 16px;
     line-height: 16px;
-    font-weight: 400;
-    color: #999;
+    font-weight: ${(props) => props.$isActive ? '600' : '400'};
+    color: ${(props) => props.$isActive ? '#161D24' : '#999'};
+    border-bottom: 2px solid ${(props)=> props.$isActive ? '#161D24' : 'transparent'};
+    margin-bottom: -1px;
     transition: all 0.2s;
 
     &:hover {
@@ -152,6 +188,7 @@ export default function ProductDetail() {
   `
   const DetailMainImg = styled.img`
     width: 100%; height: auto;
+    display: block;
   `
   const BlurBox = styled.div`
     position: absolute;
@@ -186,12 +223,13 @@ export default function ProductDetail() {
     font-weight: 600;
     border-bottom: 1px solid #161D24;
     padding-bottom: 15px;
+    margin-bottom: 0;
   `
   const PhotoReviewBox = styled.div`
     display: flex;
     gap: 10px;
     width: 100%;
-    margin-bottom: 30px;
+    margin: 30px 0;
   `
   const PhotoCard = styled.div`
     position: relative;
@@ -299,43 +337,93 @@ export default function ProductDetail() {
     border-radius: 3px;
     object-fit: cover;
   `
-  const PaginationContainer = styled.div`
+  const PageinationBox = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 16px;
-    margin-top: 30px;
-    padding: 20px 0;
-  `;
-
-  const PageBtn = styled.button`
-    background: none;
-    border: none;
-    font-size: 14px;
-    color: #aaa;
-    cursor: pointer;
-    
-    &:disabled {
-      cursor: not-allowed;
-      opacity: 0.3;
-    }
-  `;
-
+    gap: 8px;
+    margin-top: 50px;
+  `
   const PageNumBtn = styled.button`
     background: none;
     border: none;
     font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s ease;
+    font-weight: 400;
+    width: 20px; height: 20px;
+    transition: all 0.2s;
     
-    color: ${props => props.$isActive ? '#da1a22' : '#888'};
-    font-weight: ${props => props.$isActive ? 'bold' : '500'};
+    color: ${(props) => props.$isActive ? '#161D24' : '#999'};
+    font-weight: ${props => props.$isActive ? '500' : '400'};
 
     &:hover {
-      color: #111;
+      color: #161D24;
     }
-  `;
+  `
+  const PageBtn = styled.button`
+    background: none;
+    border: none;
+    width: 25px; height: 25px;
+    opacity: 0.4;
+    transition: all 0.2s;
+
+    img {
+      width: 6px;
+      margin: 0 auto;
+    }
+    visibility: ${(props) => props.$show? 'visible' : 'hidden'};
+
+    &:hover {
+      opacity: 1;
+    }
+  `
+  const StyledAccordion = styled(Accordion)`
+    width: 100%;
+    margin-top: 0;
+
+    .accordion-item {
+      border: none;
+      border-bottom: 1px solid #ddd;
+      background-color: #fff;  
+    }
+
+    .accordion-button {
+      padding: 20px 20px;
+      font-size: 16px;
+      color: #161D24;
+      box-shadow: none;
+
+      &:focus {
+        box-shadow: none;
+        border-color: transparent;
+      }
+      &:not(.collapsed) {
+        color: #161D24;
+        background-color: #fff;
+        font-weight: 500;
+      }
+    }
+    .accordion-body {
+      padding: 25px 20px;
+      background-color: #F6F6F6;
+
+      p {
+        font-size: 14px;
+        line-height: 16px;
+        font-weight: 500;
+        color: #161D24;
+        margin-bottom: 8px;
+      }
+      span {
+        display: block;
+        font-size: 14px;
+        color: #666;
+        line-height: 20px;
+        margin-bottom: 20px;
+        &:last-child {margin-bottom: 0;}
+      }
+    }
+  `
+
 
 
   const RightBox = styled.div`
@@ -590,9 +678,9 @@ export default function ProductDetail() {
             <MainImg src={selectedImg} alt={product.title} />
           </LeftImgBox>{/*LeftImgSection*/}
           <TabMenu>
-            <TabBtn onClick={()=>scrollToSection(detailRef)}>상세정보</TabBtn>
-            <TabBtn onClick={()=>scrollToSection(reviewRef)}>리뷰 {product.reviews?.length || 0}</TabBtn>
-            <TabBtn onClick={()=>scrollToSection(deliveryRef)}>배송안내</TabBtn>
+            <TabBtn $isActive={activeTab === 'detail'} onClick={()=>handleTabClick(detailRef,'detail')}>상세정보</TabBtn>
+            <TabBtn $isActive={activeTab === 'review'} onClick={()=>handleTabClick(reviewRef,'review')}>리뷰 {product.reviews?.length || 0}</TabBtn>
+            <TabBtn $isActive={activeTab === 'delivery'} onClick={()=>handleTabClick(deliveryRef,'delivery')}>배송안내</TabBtn>
           </TabMenu>
           <LeftBotContent>
             <InfoBox ref={detailRef}>
@@ -629,15 +717,15 @@ export default function ProductDetail() {
               <ReviewFilter>
                 <div className='total_count'>총 {product.reviews?.length || 0}개</div>
                 <FilterList>
-                  <span className={sortBy === 'recent' ? 'active' : ''} onClick={()=>setSortBy('recent')}>최근등록순</span>
+                  <span className={sortBy === 'recent' ? 'active' : ''} onClick={()=>handleSortChange('recent')}>최근등록순</span>
                   <div>ㅣ</div>
-                  <span className={sortBy === 'highRating' ? 'active' : ''} onClick={()=>setSortBy('highRating')}>별점높은순</span>
+                  <span className={sortBy === 'highRating' ? 'active' : ''} onClick={()=>handleSortChange('highRating')}>별점높은순</span>
                   <div>ㅣ</div>
-                  <span className={sortBy === 'lowRating' ? 'active' : ''} onClick={()=>setSortBy('lowRating')}>별점낮은순</span>
+                  <span className={sortBy === 'lowRating' ? 'active' : ''} onClick={()=>handleSortChange('lowRating')}>별점낮은순</span>
                 </FilterList>
               </ReviewFilter>
               <ReviewList>
-                {sortedReviews.map((review)=> (
+                {cutReviews.map((review)=> (
                   <ReviewItem key={review.reviewId}>
                     <ReviewTop>
                       <UserFlex>
@@ -659,9 +747,47 @@ export default function ProductDetail() {
                   </ReviewItem>
                 ))}
               </ReviewList>
+              {totalPages > 1 && (
+                <PageinationBox>
+                  <PageBtn $show={nowPage > 1} onClick={()=>setNowPage(prev => Math.max(prev - 1, 1))} ><img src={process.env.PUBLIC_URL + '/images/left_arrow_w.png'} /></PageBtn>
+                  {PageNumbers.map((number) => (
+                    <PageNumBtn key={number} $isActive={nowPage === number} onClick={()=>setNowPage(number)}>{number}</PageNumBtn>
+                  ))}
+                  <PageBtn $show={nowPage < totalPages} onClick={()=>setNowPage(prev=>Math.min(prev+1, totalPages))}><img src={process.env.PUBLIC_URL + '/images/more.png'} /></PageBtn>
+                </PageinationBox>
+              )}
             </InfoBox>
             <InfoBox ref={deliveryRef}>
               <InfoTitle>배송 안내</InfoTitle>
+              <StyledAccordion alwaysOpen>
+                <Accordion.Item eventKey="0">
+                  <Accordion.Header>배송안내</Accordion.Header>
+                  <Accordion.Body>
+                    <p>• 택배배송</p>
+                    <span>평일 오후 5시까지 주문시 내일 아침 8시전 수령 3만원 이상 주문 시 무료 배송</span>
+                    <p>• 매장픽업</p>
+                    <span>오후 5시 전 결제 시 오늘 픽업 가능, 결제 완료 후 상품준비 완료 알림톡 24시간 내 발송, 최대 2일까지 픽업 가능</span>
+                    <p>• 오늘배송</p>
+                    <span>오후 6시 전 결제 시 오늘 도착 예정</span>
+                    <p>• 대량주문</p>
+                    <span>4박스(48개) 이상부터 구매 가능<br/>배송비 소형 26,000원 / 대형 38,000원 직접 방문 매장픽업 시 무료</span>
+                  </Accordion.Body>
+                </Accordion.Item>
+                <Accordion.Item eventKey="1">
+                  <Accordion.Header>반품/취소/교환/배송비 안내</Accordion.Header>
+                  <Accordion.Body>
+                    <p>• 주문취소</p>
+                    <span><strong>상품 준비가 시작되면 주문 취소가 불가합니다.</strong> (※ 배송준비중/픽업준비중인 주문은 취소 불가)<br/>동시 주문이 많은 상품은 결제 후에도 품절될 수 있습니다.<br/>상품 품절, 택배사 배송 지연 등의 사유로 인한 전체 주문 취소는 불가합니다.</span>
+                    <p>• 교환/반품 유의사항</p>
+                    <span><strong>상품이 수거되지 않으면 교환/환불이 처리되지 않습니다.</strong><br/>신청 이후 7영업일 이상 상품이 수거되지 않을 경우,교환/반품이 자동 철회 처리될 수 있습니다.<br/>교환은 동일 옵션/품번 상품만 신청 가능합니다. (※ 색상, 사이즈, 디자인 등 상품 옵션 변경이 필요하신 경우, 반품 후 재구매해 주시기 바랍니다.)<br/>교환 상품이 품절일 경우, 상품 금액은 환불 처리됩니다.</span>
+                    <p>• 교환/반품 신청 기간</p>
+                    <span>[고객 사유] 상품을 받으신 날부터 7일 이내 신청 가능<br/>단순변심, 주문 착오, 주소지 오기재 등</span>
+                    <span>[다이소몰 사유] 상품을 받으신 날부터 3개월 이내 또는 그 사실을 알 수 있었던 날부터 30일 이내 상품이 표기/광고 내용과 다른 경우<br/>계약 내용과 다르게 이행된 경우</span>
+                    <p>• 교환/반품 절차 안내</p>
+                    <span><strong>택배배송</strong><br/>온라인 접수→택배사 수거<br/>※ 매장 교환/반품은 불가합니다.<br/><br/><strong>매장픽업/대량주문(픽업)</strong><br/>온라인 접수 후 매장 방문<br/>구매 매장 방문 접수<br/>※ 택배 교환/반품은 불가합니다.<br/><br/><strong>대량주문(배송)</strong><br/>온라인 접수→담당자 안내→차량 수거<br/>※ 택배 교환/반품은 불가합니다.</span>
+                  </Accordion.Body>
+                </Accordion.Item>
+              </StyledAccordion>
             </InfoBox>
           </LeftBotContent>
         </LeftContainer>

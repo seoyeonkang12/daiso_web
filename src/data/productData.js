@@ -256,8 +256,7 @@ const productData = {
       mainImg: process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg',
       subImages: [
         process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg', 
-        process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg', 
-        process.env.PUBLIC_URL + '/images/beauty_detailMain_01.jpg'
+        process.env.PUBLIC_URL + '/images/beauty_detailMain_02.jpg', 
       ],
       detailImages: [
         process.env.PUBLIC_URL + '/images/detailImg_01.jpg',
