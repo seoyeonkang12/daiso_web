@@ -10,6 +10,7 @@ import Soldout from './pages/Soldout';
 import Notice from './pages/Notice';
 import Login from './pages/Login';
 import Cart from './pages/Cart';
+import Wish from './pages/Wish';
 import About from './pages/About';
 
 import { Routes, Route, Link, NavLink, useLocation, useNavigate } from 'react-router-dom';
@@ -76,7 +77,7 @@ function App() {
                   </>) : (
                     <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
                   )}
-                <NavLink className='heart' to='/heart'><img src={process.env.PUBLIC_URL + '/images/heart.png'} alt='heart_img' /></NavLink>
+                <NavLink className='wish' to='/wish'><img src={process.env.PUBLIC_URL + '/images/heart.png'} alt='heart_img' /></NavLink>
                 <NavLink className='shopping' to='/cart'><img src={process.env.PUBLIC_URL + '/images/shopping.png'} alt='shopping_img' /></NavLink>
               </div>
             </div>
@@ -109,6 +110,7 @@ function App() {
         <Route path='notice' element={<Notice />} />
         <Route path='login' element={<Login />} />
         <Route path='cart' element={<Cart />} />
+        <Route path='wish' element={<Wish />} />
         <Route path='about' element={<About />} />
       </Routes>
       <footer>

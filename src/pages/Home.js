@@ -1,5 +1,6 @@
 import React from 'react';
-import { useRef, useState } from "react";
+import { useState } from "react";
+import { useDispatch, useSelector } from 'react-redux';
 // Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
@@ -10,8 +11,17 @@ import { Link } from 'react-router-dom';
 import productData from '../data/productData';
 import homeStyle from './home.module.css';
 import Tab from '../components/Tab';
+import { addItem, toggleWish } from './store';
 
 export default function Home() {
+
+  // const [daisoProduct] = useState(productData);
+  const dispatch = useDispatch();
+  const wishItems = useSelector((state) => state.wish);
+
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('');
 
   const { banners, category, rankCategory, products } = productData;
   const [activeTab, setActiveTab] = useState('single');
@@ -19,6 +29,46 @@ export default function Home() {
   const showBanner = banners[activeTab];
   const showProducts = products.filter(product => product.category && product.category.includes(activeTab)).slice(0, 4);
   const showNewProducts = [...products].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 6);
+
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setPopupOpen(true);
+
+    setTimeout(()=> {
+      setPopupOpen(false);
+    }, 3000);
+  };
+
+  const handleWishClick = (product) => {
+    const isAlreadyWished = wishItems.some(item => item.id === product.id);
+
+    dispatch(toggleWish({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      tags: product.tags
+    }));
+
+    if(isAlreadyWished) {
+      triggerPopup('찜한 상품에서 제외되었습니다.', '');
+    } else {
+      triggerPopup('찜한 상품에 등록되었습니다.', 'wish');
+    }
+  };
+
+  const handleCartClick = (product) => {
+    dispatch(addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      count: 1
+    }));
+    triggerPopup('장바구니에 상품이 담겼습니다.', 'cart');
+  };
+
 
   return (
     <div>
@@ -134,27 +184,32 @@ export default function Home() {
                 ))}
               </div> */}
               <div className={homeStyle.pickProduct}>
-                {showProducts.map(product => (
-                  <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}>
-                    <div className={homeStyle.imageBox}>
-                      <img src={product.image} alt={product.title}/>
-                      <button className={homeStyle.wishBtn} onClick={(e)=>e.preventDefault()}><img src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
-                      </button>
+                {showProducts.map(product => {
+                  const isWished = wishItems.some(item => item.id === product.id);
+                  return (
+                    <div key={product.id} className={homeStyle.aLink} >
+                        <div className={homeStyle.imageBox}>
+                        <Link to={`/product/${product.id}`} key={product.id}><img src={product.image} alt={product.title}/></Link>
+                          <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
+                          </button>
+                        </div>
+                        <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
+                          <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기'/>담기
+                        </button>
+                        <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}>
+                          <div className={homeStyle.infoBox}>
+                            <p className={homeStyle.prodTitle}>{product.title}</p>
+                            <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원</p>
+                            <div className={homeStyle.tagRow}>
+                              {product.tags && product.tags.map((tag, index) => (
+                                <span key={index} className={homeStyle.tagNum}>{tag}</span>
+                              ))}
+                            </div>
+                          </div>{/*infoBox*/}
+                        </Link>
                     </div>
-                    <button className={homeStyle.cartBtn} onClick={(e)=>e.preventDefault()}> 
-                      <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} />담기
-                    </button>
-                    <div className={homeStyle.infoBox}>
-                      <p className={homeStyle.prodTitle}>{product.title}</p>
-                      <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원</p>
-                      <div className={homeStyle.tagRow}>
-                        {product.tags && product.tags.map((tag, index) => (
-                          <span key={index} className={homeStyle.tagNum}>{tag}</span>
-                        ))}
-                      </div>
-                    </div>{/*infoBox*/}
-                  </Link>
-                ))}
+                  );
+                })}
               </div>{/*pickProduct*/}
             </div>{/*rightTab*/}
           </div>
@@ -189,30 +244,36 @@ export default function Home() {
               ))}
           </div> */}
           <div className={homeStyle.rankGrid}>
-            {products.filter(product=>product.category && product.category.includes(activeRankTab)).sort((a, b) => b.sales - a.sales).slice(0, 12).map((product, index)=> { const rankNumber = String(index + 1).padStart(2, '0');
+            {products.filter(product=>product.category && product.category.includes(activeRankTab)).sort((a, b) => b.sales - a.sales).slice(0, 12).map((product, index)=> {
+              const rankNumber = String(index + 1).padStart(2, '0');
+              const isWished = wishItems.some(item => item.id === product.id);
               return (
-                <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}>
+                <div key={product.id} className={homeStyle.aLink}>
                   <div className={homeStyle.imageBox}>
-                    <span className={`${homeStyle.rankBadge} ${index === 0 ? homeStyle.topRank : ''}`}>
-                    {rankNumber}
-                    </span>
-                    <img src={product.image} alt={product.title}/>
-                    <button className={homeStyle.wishBtn} onClick={(e)=>e.preventDefault()}><img src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
+                    <Link to={`/product/${product.id}`}>
+                      <span className={`${homeStyle.rankBadge} ${index === 0 ? homeStyle.topRank : ''}`}>
+                      {rankNumber}
+                      </span>
+                      <img src={product.image} alt={product.title}/>
+                    </Link>
+                    <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                     </button>
                   </div>
-                  <button className={homeStyle.cartBtn} onClick={(e)=>e.preventDefault()}> 
+                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
                     <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} />담기
                   </button>
-                  <div className={homeStyle.infoBox}>
-                    <p className={homeStyle.prodTitle}>{product.title}</p>
-                    <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원</p>
-                    <div className={homeStyle.tagRow}>
-                      {product.tags && product.tags.map((tag, index) => (
-                        <span key={index} className={homeStyle.tagNum}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>{/*infoBox*/}
-                </Link>
+                  <Link to={`/product/${product.id}`} className={homeStyle.aLink}>
+                    <div className={homeStyle.infoBox}>
+                      <p className={homeStyle.prodTitle}>{product.title}</p>
+                      <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원</p>
+                      <div className={homeStyle.tagRow}>
+                        {product.tags && product.tags.map((tag, index) => (
+                          <span key={index} className={homeStyle.tagNum}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>{/*infoBox*/}
+                  </Link>
+                </div>
               );
             })}
           </div>
@@ -228,31 +289,48 @@ export default function Home() {
           <div className={homeStyle.newList}>
             {showNewProducts.map(product=> {
               const isRecent = (new Date() - new Date(product.date)) < (30 * 24 * 60 * 60 * 1000);
+              const isWished = wishItems.some(item => item.id === product.id);
               return (
-                <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}>
+                <div key={product.id} className={homeStyle.aLink}>
                   <div className={homeStyle.imageBox}>
-                    <img src={product.image} alt={product.title}/>
-                    <button className={homeStyle.wishBtn} onClick={(e)=>e.preventDefault()}><img src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
+                    <Link to={`/product/${product.id}`}>
+                      <img src={product.image} alt={product.title}/>
+                    </Link>
+                    <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                     </button>
                   </div>
-                  <button className={homeStyle.cartBtn} onClick={(e)=>e.preventDefault()}> 
+                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
                     <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} />담기
                   </button>
-                  <div className={homeStyle.infoBox}>
-                    <p className={homeStyle.prodTitle}>{product.title}</p>
-                    <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원{isRecent && <span className={homeStyle.newBadge}>NEW</span>}</p>
-                    <div className={homeStyle.tagRow}>
-                      {product.tags && product.tags.map((tag, index) => (
-                        <span key={index} className={homeStyle.tagNum}>{tag}</span>
-                      ))}
-                    </div>
-                  </div>{/*infoBox*/}
-                </Link>
+                  <Link to={`/product/${product.id}`} className={homeStyle.aLink}>
+                    <div className={homeStyle.infoBox}>
+                      <p className={homeStyle.prodTitle}>{product.title}</p>
+                      <p className={homeStyle.prodPrice}>{product.price.toLocaleString()}원{isRecent && <span className={homeStyle.newBadge}>NEW</span>}</p>
+                      <div className={homeStyle.tagRow}>
+                        {product.tags && product.tags.map((tag, index) => (
+                          <span key={index} className={homeStyle.tagNum}>{tag}</span>
+                        ))}
+                      </div>
+                    </div>{/*infoBox*/}
+                  </Link>
+                </div>
               );
             })}
           </div>
         </section>{/*newContent*/}
       </div>{/*container*/}
+      {popupOpen && (
+        <div className={homeStyle.popupOverlay} onClick={()=> setPopupOpen(false)}>
+          <div className={homeStyle.popupBox} onClick={(e)=>e.stopPropagation()}>
+            <p className={homeStyle.popupTxt}>{popupMessage}</p>
+            {popupType !== '' && (
+              <Link to={popupType === 'cart' ? '/cart' : '/wish'} className={homeStyle.goCartLink} onClick={() => setPopupOpen(false)}>
+                {popupType === 'cart' ? '장바구니 보러가기' : '찜한 상품 보러가기'}
+              </Link>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   )
 }

@@ -51,7 +51,7 @@ export default function Notice() {
       }
   `
   const Type = styled.span`
-    color: #666;
+    color: #999;
     font-size: 16px;
     font-weight: 400;
     line-height: 18px;
@@ -65,9 +65,9 @@ export default function Notice() {
     line-height: 18px;
   `
   const NoticeDate = styled.span`
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 400;
-    color: #666;
+    color: #999;
     line-height: 18px;
   `
   const Pagination = styled.div`

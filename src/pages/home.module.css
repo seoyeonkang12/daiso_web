@@ -350,3 +350,54 @@ button {
   gap: 10px;
   grid-template-columns: repeat(6, 1fr);
 }
+
+/*************** popup ***************/
+@keyframes slideUpPopup {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -30%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+.popupOverlay {
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100vh;
+  background-color: rgba(22, 29, 36, 0.5);
+  z-index: 999;
+}
+.popupBox {
+  position: fixed;
+  top: 50%; left: 50%;
+  background-color: #fff;
+  border-radius: 5px;
+  width: 350px;
+  padding: 40px 0;
+  animation: slideUpPopup 0.2s ease-out forwards;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.popupTxt {
+  font-size: 16px;
+  font-weight: 500;
+  margin-bottom: 0;
+}
+.goCartLink {
+  display: inline-block;
+  font-size: 14px;
+  text-decoration: none;
+  border-radius: 50px;
+  color: #fff;
+  background-color: #161D24;
+  padding: 5px 15px;
+  margin-top: 15px;
+  transition: all 0.2s;
+}
+.goCartLink:hover {
+  background-color: #E60012;
+  color: #fff;
+}

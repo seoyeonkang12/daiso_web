@@ -1,13 +1,21 @@
 import React from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
 import Tab from '../components/Tab';
 import productData from '../data/productData';
+import { addItem, toggleWish } from './store';
 
 export default function Category() {
 
   const {rankCategory, products} = productData;
+  const dispatch = useDispatch();
+  const wishItems = useSelector((state) => state.wish);
+
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('');
 
   const totalCategory = [{id: 'all', label: '전체'}, ...rankCategory];
   const [showSubTab, setShowSubTab] = useState('all');
@@ -23,13 +31,51 @@ export default function Category() {
     return 0;
   });
 
-
   const [moreCount, setMoreCount] = useState(24);
   const handleTabChange = (tabId) => {
     setShowSubTab(tabId);
     setMoreCount(18);
   };
   const displayedProducts = sortProducts.slice(0, moreCount);
+
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setPopupOpen(true);
+
+    setTimeout(()=> {
+      setPopupOpen(false);
+    }, 3000);
+  };
+
+  const handleWishClick = (product) => {
+    const isAlreadyWished = wishItems.some(item => item.id === product.id);
+
+    dispatch(toggleWish({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      tags: product.tags
+    }));
+
+    if(isAlreadyWished) {
+      triggerPopup('찜한 상품에서 제외되었습니다.', '');
+    } else {
+      triggerPopup('찜한 상품에 등록되었습니다.', 'wish');
+    }
+  };
+
+  const handleCartClick = (product) => {
+    dispatch(addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      count: 1
+    }));
+    triggerPopup('장바구니에 상품이 담겼습니다.', 'cart');
+  };
 
 
   const Wrap = styled.div`
@@ -119,6 +165,17 @@ export default function Category() {
   const WishBtnImg = styled.img`
     width: 18px;
     display: inline-block;
+  `
+  const RankBadge = styled.span`
+    position: absolute;
+    top: 0; left: 0;
+    background-color: ${(props) => props.$isTop ? '#E60012' : '#161D24'};
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 3px 6px;
+    border-radius: 3px;
+    z-index: 10;
   `
   const CartBtnImg = styled.img`
     width: 17px;
@@ -217,6 +274,56 @@ export default function Category() {
       border: 1px solid #161D24;
     }
   `
+  const slideUpPopup = keyframes`
+    from {
+      opacity: 0;
+      transform: translate(-50%, -30%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  `
+  const PopupOverlay = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background-color: rgba(22, 29, 36, 0.5);
+    z-index: 999;
+  `
+  const PopupBox = styled.div`
+    position: fixed;
+    top: 50%; left: 50%;
+    background-color: #fff;
+    border-radius: 5px;
+    width: 350px;
+    padding: 40px 0;
+    animation: ${slideUpPopup} 0.2s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `
+  const PopupTxt = styled.p`
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 0;
+  `
+  const GoCartLink = styled(Link)`
+    display: inline-block;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 50px;
+    color: #fff;
+    background-color: #161D24;
+    padding: 5px 15px;
+    margin-top: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #E60012;
+      color: #fff;    
+    }
+  `
   
   return (
     <Wrap>
@@ -243,32 +350,41 @@ export default function Category() {
         </SortButtons>
       </FilterRow>
       <ProductList>
-        {displayedProducts.map((product)=>{
+        {displayedProducts.map((product, index)=>{
           const isRecent = (new Date() - new Date(product.date)) < (30 * 24 * 60 * 60 * 1000);
+          const rankNumber = String(index + 1).padStart(2, '0');
+          const isWished = wishItems.some(item => item.id === product.id);
           return (
-            <ProductCard to={`/product/${product.id}`} key={product.id}>
+            <div key={product.id}>
               <ImageBox>
-                <ImageBoxImg src={product.image} alt={product.title} />
-                <WishBtn onClick={(e)=>e.preventDefault()}>
-                  <WishBtnImg src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
+                <ProductCard to={`/product/${product.id}`}>
+                    <RankBadge $isTop={index === 0}>
+                    {rankNumber}
+                    </RankBadge>
+                    <ImageBoxImg src={product.image} alt={product.title} />
+                </ProductCard>
+                <WishBtn onClick={()=>handleWishClick(product)}>
+                  <WishBtnImg src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                 </WishBtn>
               </ImageBox>
-              <CartBtn onClick={(e)=>e.preventDefault()}>
+              <CartBtn onClick={()=>handleCartClick(product)}>
                 <CartBtnImg src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기' />담기
               </CartBtn>
-              <div>
-                <ProdTitle>{product.title}</ProdTitle>
-                <ProdPrice>
-                  {product.price.toLocaleString()}원
-                  {isRecent && <NewBadge>NEW</NewBadge>}
-                </ProdPrice>
-                <TagRow>
-                  {product.tags && product.tags.map((tag, index)=> (
-                    <TagNum key={index}>{tag}</TagNum>
-                  ))}
-                </TagRow>
-              </div>
-            </ProductCard>
+              <ProductCard to={`/product/${product.id}`}>
+                <div>
+                  <ProdTitle>{product.title}</ProdTitle>
+                  <ProdPrice>
+                    {product.price.toLocaleString()}원
+                    {isRecent && <NewBadge>NEW</NewBadge>}
+                  </ProdPrice>
+                  <TagRow>
+                    {product.tags && product.tags.map((tag, index)=> (
+                      <TagNum key={index}>{tag}</TagNum>
+                    ))}
+                  </TagRow>
+                </div>
+              </ProductCard>
+            </div>
           );
         })}
       </ProductList>
@@ -277,6 +393,18 @@ export default function Category() {
           <MoreBtn onClick={()=>setMoreCount(prev => prev + 18)}>더보기</MoreBtn>
         )}
       </MoreBtnBox>
+      {popupOpen && (
+        <PopupOverlay  onClick={()=> setPopupOpen(false)}>
+          <PopupBox onClick={(e)=>e.stopPropagation()}>
+            <PopupTxt>{popupMessage}</PopupTxt>
+            {popupType !== '' && (
+              <GoCartLink to={popupType === 'cart' ? '/cart' : '/wish'} onClick={() => setPopupOpen(false)}>
+                {popupType === 'cart' ? '장바구니 보러가기' : '찜한 상품 보러가기'}
+              </GoCartLink>
+            )}
+          </PopupBox>
+        </PopupOverlay>
+      )}
     </Wrap>
   )
 }

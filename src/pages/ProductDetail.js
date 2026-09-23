@@ -208,7 +208,7 @@ export default function ProductDetail() {
     text-align: center;
     line-height: 48px;
     display: block;
-    margin: 0 auto;
+    margin: 30px auto 0;
     transition: all 0.2s;
 
     &:hover {
@@ -229,11 +229,11 @@ export default function ProductDetail() {
     display: flex;
     gap: 10px;
     width: 100%;
-    margin: 30px 0;
+    margin: 30px 0 10px;
   `
   const PhotoCard = styled.div`
     position: relative;
-    flex-grow: 1;
+    width: calc((100% - 60px)/7);
     overflow: hidden;
 
     img {
@@ -262,6 +262,7 @@ export default function ProductDetail() {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-top: 20px;
 
     .total_count {
       font-size: 14px;
@@ -326,11 +327,12 @@ export default function ProductDetail() {
     font-size: 14px;
     font-weight: 400;
     line-height: 20px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
   `
   const ReviewImgList = styled.div`
     display: flex;
     gap: 5px;
+    margin-top: 30px;
   `
   const ReviewImg = styled.img`
     width: 100px; height: 100px;
@@ -700,7 +702,7 @@ export default function ProductDetail() {
               {allReviewImages.length > 0 && (
                 <PhotoReviewBox>
                   {previewImages.map((imgUrl, index) => {
-                    const InsidePreview = index === 4 && allReviewImages.length > 5;
+                    const InsidePreview = index === 5 && allReviewImages.length > 5;
                     return (
                       <PhotoCard key={index}>
                         <img src={imgUrl} alt={`포토리뷰_${index}`} />
