@@ -95,7 +95,7 @@ export default function Pick() {
     margin-top: 50px;
   `
   const TabWidth = styled.div`
-    margin-bottom: 60px;
+    margin-bottom: 40px;
   `
 
   const FilterRow = styled.div`
@@ -143,6 +143,13 @@ export default function Pick() {
     grid-template-columns: repeat(6, 1fr);
     gap: 40px 10px;
     margin-bottom: 100px;
+  `
+  const fadeIn = keyframes`
+    0% {opacity: 0};
+    100% {opacity: 1};
+  `
+  const AnimateProduct = styled.div`
+    animation: ${fadeIn} 0.3s ease-in-out forwards;
   `
   const ProductCard = styled(Link)`
     text-decoration: none;
@@ -458,7 +465,7 @@ export default function Pick() {
           const isRecent = (new Date() - new Date(product.date)) < (30 * 24 * 60 * 60 * 1000);
           const isWished = wishItems.some(item => item.id === product.id);
           return (
-            <div key={product.id}>
+            <AnimateProduct key={product.id}>
               <ImageBox>
                 <ProductCard to={`/product/${product.id}`} key={product.id}>
                   <ImageBoxImg src={product.image} alt={product.title} />
@@ -484,7 +491,7 @@ export default function Pick() {
                   </TagRow>
                 </div>
               </ProductCard>
-            </div>
+            </AnimateProduct>
           );
         })}
       </ProductList>

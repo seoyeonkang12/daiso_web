@@ -249,6 +249,7 @@ button {
   margin-right: 30px;
   text-decoration: none;
   color: #161D24;
+  animation: fadeIn 0.3s ease-in-out forwards;
 }
 .pickFlex .leftBanner .bannerTxt {
   font-size: 30px;
@@ -265,6 +266,13 @@ button {
   display: flex;
   gap: 10px;
 }
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+.animateProduct {
+  animation: fadeIn 0.3s ease-in-out forwards;
+}
 .pickContent .prodTitle {
   font-size: 16px;
   font-weight: 400;
@@ -275,6 +283,7 @@ button {
 
 .TabBox {
   margin-bottom: 10px;
+
 }
 /*************** event ***************/
 .event {

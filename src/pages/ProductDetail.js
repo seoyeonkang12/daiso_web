@@ -638,7 +638,7 @@ export default function ProductDetail() {
   `
   const CartBtn = styled.button`
     width: 74%; height: 56px;
-    background-color: #161D24;
+    background-color: #E60012;
     border-radius: 3px;
     font-size: 18px;
     font-weight: 600;
@@ -646,7 +646,7 @@ export default function ProductDetail() {
     transition: all 0.2s;
 
     &:hover {
-      background-color: #E60012;
+      background-color: #161D24;
     }
   `
   const DetailInfoBox = styled.div`

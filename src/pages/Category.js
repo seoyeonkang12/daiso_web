@@ -138,6 +138,13 @@ export default function Category() {
     grid-template-columns: repeat(6, 1fr);
     gap: 40px 10px;
   `
+  const fadeIn = keyframes`
+    0% {opacity: 0};
+    100% {opacity: 1};
+  `
+  const AnimateProduct = styled.div`
+    animation: ${fadeIn} 0.3s ease-in-out forwards;
+  `
   const ProductCard = styled(Link)`
     text-decoration: none;
     color: #161D24;
@@ -355,7 +362,7 @@ export default function Category() {
           const rankNumber = String(index + 1).padStart(2, '0');
           const isWished = wishItems.some(item => item.id === product.id);
           return (
-            <div key={product.id}>
+            <AnimateProduct key={product.id}>
               <ImageBox>
                 <ProductCard to={`/product/${product.id}`}>
                     <RankBadge $isTop={index === 0}>
@@ -384,7 +391,7 @@ export default function Category() {
                   </TagRow>
                 </div>
               </ProductCard>
-            </div>
+            </AnimateProduct>
           );
         })}
       </ProductList>

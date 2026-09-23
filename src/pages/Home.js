@@ -176,20 +176,13 @@ export default function Home() {
                   setActiveTab={setActiveTab}
                 />
               </div>
-              {/* <div>
-                {category.map(tab => (
-                  <button key={tab.id}
-                  className={`${homeStyle.tabBtn} ${activeTab === tab.id ? homeStyle.activeTab : ''}`}
-                  onClick={()=>setActiveTab(tab.id)}>{tab.label}</button>
-                ))}
-              </div> */}
               <div className={homeStyle.pickProduct}>
                 {showProducts.map(product => {
                   const isWished = wishItems.some(item => item.id === product.id);
                   return (
-                    <div key={product.id} className={homeStyle.aLink} >
+                    <div key={product.id} className={homeStyle.animateProduct} >
                         <div className={homeStyle.imageBox}>
-                        <Link to={`/product/${product.id}`} key={product.id}><img src={product.image} alt={product.title}/></Link>
+                        <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}><img src={product.image} alt={product.title}/></Link>
                           <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                           </button>
                         </div>
@@ -236,21 +229,14 @@ export default function Home() {
               setActiveTab={setActiveRankTab}
             />
           </div>
-          {/* <div className={homeStyle.rankTabs}>
-              {rankCategory.map(tab => (
-                <button key={tab.id}
-                className={`${homeStyle.tabBtn} ${activeRankTab === tab.id ? homeStyle.activeRankTab : ''}`}
-                onClick={()=>setActiveRankTab(tab.id)}>{tab.label}</button>
-              ))}
-          </div> */}
           <div className={homeStyle.rankGrid}>
             {products.filter(product=>product.category && product.category.includes(activeRankTab)).sort((a, b) => b.sales - a.sales).slice(0, 12).map((product, index)=> {
               const rankNumber = String(index + 1).padStart(2, '0');
               const isWished = wishItems.some(item => item.id === product.id);
               return (
-                <div key={product.id} className={homeStyle.aLink}>
+                <div key={product.id} className={homeStyle.animateProduct}>
                   <div className={homeStyle.imageBox}>
-                    <Link to={`/product/${product.id}`}>
+                    <Link to={`/product/${product.id}`} className={homeStyle.aLink}>
                       <span className={`${homeStyle.rankBadge} ${index === 0 ? homeStyle.topRank : ''}`}>
                       {rankNumber}
                       </span>
