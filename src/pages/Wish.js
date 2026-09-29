@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
-import { deleteWishItem, deleteMultiWishes } from './store';
+import { deleteMultiWishes } from './store';
 import { addItem } from './store';
 
 import { Link } from 'react-router-dom';
+import { VscClose } from "react-icons/vsc";
 
 export default function Wish() {
 
   const wishItems = useSelector((state) => state.wish);
   const dispatch = useDispatch();
   const [checkedIds, setCheckedIds] = useState([]);
+  
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('');
   
   useEffect(()=> {
     if(wishItems.length > 0 && checkedIds.length === 0) {
@@ -44,6 +49,27 @@ export default function Wish() {
       setCheckedIds([]);
     }
   }
+
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setPopupOpen(true);
+
+    setTimeout(()=> {
+      setPopupOpen(false);
+    }, 3500);
+  };
+
+  const handleCartClick = (product) => {
+    dispatch(addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      count: 1
+    }));
+    triggerPopup('장바구니에 상품이 담겼습니다.', 'cart');
+  };
 
   
   const Wrap = styled.div`
@@ -217,6 +243,66 @@ export default function Wish() {
     margin-bottom: 0;
     line-height: 12px;
   `
+  const slideUpPopup = keyframes`
+    from {
+      opacity: 0;
+      transform: translate(-50%, -30%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  `
+  const PopupOverlay = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background-color: rgba(22, 29, 36, 0.5);
+    z-index: 999;
+  `
+  const PopupBox = styled.div`
+    position: fixed;
+    top: 50%; left: 50%;
+    background-color: #fff;
+    border-radius: 5px;
+    width: 350px;
+    padding: 40px 0;
+    animation: ${slideUpPopup} 0.2s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `
+  const PopupTxt = styled.p`
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 0;
+  `
+  const GoCartLink = styled(Link)`
+    display: inline-block;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 50px;
+    color: #fff;
+    background-color: #161D24;
+    padding: 5px 15px;
+    margin-top: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #E60012;
+      color: #fff;
+    }
+  `
+  const CloseBtn = styled.button`
+    color: #999;
+    position: absolute;
+    top: 15px; right: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #161D24;
+    }
+  `
 
 
   return (
@@ -243,10 +329,7 @@ export default function Wish() {
                   <WishBtn onClick={(e)=>e.preventDefault()}>
                     <WishBtnImg src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                   </WishBtn></ImgLink>
-                  <CartBtn onClick={()=> {
-                    dispatch(addItem({id: item.id, title: item.title, price: item.price, image: item.image, count: 1}));
-                    alert('장바구니에 상품이 담겼습니다.');
-                  }}><img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기'/>담기</CartBtn>
+                  <CartBtn onClick={handleCartClick}><img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기'/>담기</CartBtn>
                   <Link to={`/product/${item.id}`} className='info_link' >
                     <div>
                       <ProdTitle>{item.title}</ProdTitle>
@@ -265,9 +348,19 @@ export default function Wish() {
               )
             })}
           </WishList>
-        )
-        } 
+        )} 
       </WishContainer>
+      {popupOpen && popupType === 'cart' && (
+        <PopupOverlay  onClick={()=> setPopupOpen(false)}>
+          <PopupBox onClick={(e)=>e.stopPropagation()}>
+            <CloseBtn onClick={() => setPopupOpen(false)}><VscClose size={26}/></CloseBtn>
+            <PopupTxt>{popupMessage}</PopupTxt>
+            <GoCartLink to='/cart'>
+              장바구니 보러가기
+            </GoCartLink>
+          </PopupBox>
+        </PopupOverlay>
+      )}
     </Wrap>
   )
 }

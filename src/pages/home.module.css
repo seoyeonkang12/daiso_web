@@ -410,3 +410,13 @@ button {
   background-color: #E60012;
   color: #fff;
 }
+
+.CloseBtn {
+  color: #999;
+  position: absolute;
+  top: 15px; right: 15px;
+  transition: all 0.2s;
+}
+.CloseBtn:hover {
+  color: #161D24;
+}

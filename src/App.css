@@ -84,6 +84,17 @@
 .header_right .user img {
   width: 21px;
 }
+.header_right .user,
+.header_right .wish,
+.header_right .shopping {
+  color: #333;
+  transition: all 0.2s;
+}
+.header_right .user:hover,
+.header_right .wish:hover,
+.header_right .shopping:hover  {
+  color: #E60012;
+}
 
 
 .header .navbar {
@@ -279,11 +290,16 @@ footer {
   bottom: 30px; right: 30px;
   background-color: #fff;
   border: 1px solid #ddd;
+  box-sizing: border-box;
   width: 50px; height: 50px;
   border-radius: 50px;
   z-index: 99;
+  transition: all 0.2s;
 }
 .topBtn img {
   width: 20px;
   margin: 0 auto;
+}
+.topBtn:hover {
+  border: 1px solid #161D24;
 }

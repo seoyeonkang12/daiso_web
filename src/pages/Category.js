@@ -7,6 +7,8 @@ import Tab from '../components/Tab';
 import productData from '../data/productData';
 import { addItem, toggleWish } from './store';
 
+import { VscClose } from "react-icons/vsc";
+
 export default function Category() {
 
   const {rankCategory, products} = productData;
@@ -45,7 +47,7 @@ export default function Category() {
 
     setTimeout(()=> {
       setPopupOpen(false);
-    }, 3000);
+    }, 3500);
   };
 
   const handleWishClick = (product) => {
@@ -132,18 +134,10 @@ export default function Category() {
     font-size: 14px;
     font-weight: 300;
   `
-
   const ProductList = styled.div`
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     gap: 40px 10px;
-  `
-  const fadeIn = keyframes`
-    0% {opacity: 0};
-    100% {opacity: 1};
-  `
-  const AnimateProduct = styled.div`
-    animation: ${fadeIn} 0.3s ease-in-out forwards;
   `
   const ProductCard = styled(Link)`
     text-decoration: none;
@@ -328,7 +322,17 @@ export default function Category() {
 
     &:hover {
       background-color: #E60012;
-      color: #fff;    
+      color: #fff;
+    }
+  `
+  const CloseBtn = styled.button`
+    color: #999;
+    position: absolute;
+    top: 15px; right: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #161D24;
     }
   `
   
@@ -362,7 +366,7 @@ export default function Category() {
           const rankNumber = String(index + 1).padStart(2, '0');
           const isWished = wishItems.some(item => item.id === product.id);
           return (
-            <AnimateProduct key={product.id}>
+            <div key={product.id}>
               <ImageBox>
                 <ProductCard to={`/product/${product.id}`}>
                     <RankBadge $isTop={index === 0}>
@@ -391,7 +395,7 @@ export default function Category() {
                   </TagRow>
                 </div>
               </ProductCard>
-            </AnimateProduct>
+            </div>
           );
         })}
       </ProductList>
@@ -403,6 +407,7 @@ export default function Category() {
       {popupOpen && (
         <PopupOverlay  onClick={()=> setPopupOpen(false)}>
           <PopupBox onClick={(e)=>e.stopPropagation()}>
+            <CloseBtn onClick={() => setPopupOpen(false)}><VscClose size={26}/></CloseBtn>
             <PopupTxt>{popupMessage}</PopupTxt>
             {popupType !== '' && (
               <GoCartLink to={popupType === 'cart' ? '/cart' : '/wish'} onClick={() => setPopupOpen(false)}>

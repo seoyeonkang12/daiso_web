@@ -79,10 +79,10 @@ function App() {
                     <button type='button' className='logoutBtn' onClick={handleLogout}>로그아웃</button>
                     <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.svg'} alt='user_img' /></NavLink>
                   </>) : (
-                    <NavLink className='user' to='/login'><LiaUserSolid size={26} color={'#161D24'}/></NavLink>
+                    <NavLink className='user' to='/login'><LiaUserSolid size={26} /></NavLink>
                   )}
-                <NavLink className='wish' to='/wish'><IoMdHeartEmpty size={24} color={'#161D24'}/></NavLink>
-                <NavLink className='shopping' to='/cart'><HiOutlineShoppingBag size={22} color={'#161D24'}/></NavLink>
+                <NavLink className='wish' to='/wish'><IoMdHeartEmpty size={24}/></NavLink>
+                <NavLink className='shopping' to='/cart'><HiOutlineShoppingBag size={22}/></NavLink>
               </div>
             </div>
           </div>

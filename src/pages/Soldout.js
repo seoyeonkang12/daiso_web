@@ -7,6 +7,7 @@ import Tab from '../components/Tab';
 import productData from '../data/productData';
 import { addItem, toggleWish } from './store';
 
+import { VscClose } from "react-icons/vsc";
 
 export default function Soldout() {
  
@@ -42,7 +43,7 @@ export default function Soldout() {
 
     setTimeout(()=> {
       setPopupOpen(false);
-    }, 3000);
+    }, 3500);
   };
 
   const handleWishClick = (product) => {
@@ -322,6 +323,16 @@ export default function Soldout() {
       color: #fff;    
     }
   `
+  const CloseBtn = styled.button`
+    color: #999;
+    position: absolute;
+    top: 15px; right: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #161D24;
+    }
+  `
 
 
   return (
@@ -384,6 +395,7 @@ export default function Soldout() {
       {popupOpen && (
         <PopupOverlay  onClick={()=> setPopupOpen(false)}>
           <PopupBox onClick={(e)=>e.stopPropagation()}>
+            <CloseBtn onClick={() => setPopupOpen(false)}><VscClose size={26}/></CloseBtn>
             <PopupTxt>{popupMessage}</PopupTxt>
             {popupType !== '' && (
               <GoCartLink to={popupType === 'cart' ? '/cart' : '/wish'} onClick={() => setPopupOpen(false)}>

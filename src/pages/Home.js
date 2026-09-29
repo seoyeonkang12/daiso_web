@@ -13,6 +13,8 @@ import homeStyle from './home.module.css';
 import Tab from '../components/Tab';
 import { addItem, toggleWish } from './store';
 
+import { VscClose } from "react-icons/vsc";
+
 export default function Home() {
 
   // const [daisoProduct] = useState(productData);
@@ -37,7 +39,7 @@ export default function Home() {
 
     setTimeout(()=> {
       setPopupOpen(false);
-    }, 3000);
+    }, 3500);
   };
 
   const handleWishClick = (product) => {
@@ -308,6 +310,7 @@ export default function Home() {
       {popupOpen && (
         <div className={homeStyle.popupOverlay} onClick={()=> setPopupOpen(false)}>
           <div className={homeStyle.popupBox} onClick={(e)=>e.stopPropagation()}>
+            <button className={homeStyle.CloseBtn} onClick={() => setPopupOpen(false)}><VscClose size={26}/></button>
             <p className={homeStyle.popupTxt}>{popupMessage}</p>
             {popupType !== '' && (
               <Link to={popupType === 'cart' ? '/cart' : '/wish'} className={homeStyle.goCartLink} onClick={() => setPopupOpen(false)}>
