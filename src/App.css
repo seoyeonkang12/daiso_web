@@ -54,6 +54,7 @@
 .App .header_top .header_right {
   display: flex;
   align-items: center;
+  gap: 12px;
 }
 .header_right .welcome {
   color: #666;
@@ -79,6 +80,9 @@
 .header_right .logoutBtn:hover {
   color: #161D24;
   font-weight: 600;
+}
+.header_right .user img {
+  width: 21px;
 }
 
 

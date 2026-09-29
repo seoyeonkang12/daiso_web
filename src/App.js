@@ -19,6 +19,10 @@ import { Button, Container, Form, Nav, Navbar } from 'react-bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import ProductDetail from './pages/ProductDetail';
 
+import { LiaUserSolid } from "react-icons/lia";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
+import { IoMdHeartEmpty } from "react-icons/io";
+
 
 function App() {
 
@@ -73,12 +77,12 @@ function App() {
                     </span>
                     <div className='txtLine'>ㅣ</div>
                     <button type='button' className='logoutBtn' onClick={handleLogout}>로그아웃</button>
-                    <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
+                    <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.svg'} alt='user_img' /></NavLink>
                   </>) : (
-                    <NavLink className='user' to='/login'><img src={process.env.PUBLIC_URL + '/images/user.png'} alt='user_img' /></NavLink>
+                    <NavLink className='user' to='/login'><LiaUserSolid size={26} color={'#161D24'}/></NavLink>
                   )}
-                <NavLink className='wish' to='/wish'><img src={process.env.PUBLIC_URL + '/images/heart.png'} alt='heart_img' /></NavLink>
-                <NavLink className='shopping' to='/cart'><img src={process.env.PUBLIC_URL + '/images/shopping.png'} alt='shopping_img' /></NavLink>
+                <NavLink className='wish' to='/wish'><IoMdHeartEmpty size={24} color={'#161D24'}/></NavLink>
+                <NavLink className='shopping' to='/cart'><HiOutlineShoppingBag size={22} color={'#161D24'}/></NavLink>
               </div>
             </div>
           </div>
