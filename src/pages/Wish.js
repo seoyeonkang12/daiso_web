@@ -2,10 +2,11 @@ import React, { useEffect, useState } from 'react';
 import styled, { keyframes } from 'styled-components';
 import { useSelector, useDispatch } from 'react-redux';
 import { deleteMultiWishes } from './store';
-import { addItem } from './store';
+import { addItem, toggleWish } from './store';
 
 import { Link } from 'react-router-dom';
 import { VscClose } from "react-icons/vsc";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
 
 export default function Wish() {
 
@@ -19,13 +20,13 @@ export default function Wish() {
   
   useEffect(()=> {
     if(wishItems.length > 0 && checkedIds.length === 0) {
-      setCheckedIds(wishItems.map(item => item.id));
+      setCheckedIds(wishItems.map(product => product.id));
     }
   }, [wishItems]);
 
   const handleAllCheck = (checked) => {
     if(checked) {
-      setCheckedIds(wishItems.map(item => item.id));
+      setCheckedIds(wishItems.map(product => product.id));
     } else {
       setCheckedIds([]);
     }
@@ -58,6 +59,20 @@ export default function Wish() {
     setTimeout(()=> {
       setPopupOpen(false);
     }, 3500);
+  };
+
+  const handleWishClick = (e, product) => {
+    e.preventDefault();
+
+    dispatch(toggleWish({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      tags: product.tags
+    }));
+
+    triggerPopup('찜한 상품에 제외되었습니다.', '');
   };
 
   const handleCartClick = (product) => {
@@ -169,11 +184,10 @@ export default function Wish() {
   `
   const WishBtnImg = styled.img`
     width: 18px;
-    display: inline-block;
+    margin: 0 auto;
   `
   const CartBtn = styled.button`
     width: 100%; height: 35px;
-    line-height: 35px;
     border: 1px solid #ddd;
     font-size: 16px;
     color: #666;
@@ -182,23 +196,16 @@ export default function Wish() {
     margin-bottom: 10px;
     transition: all 0.2s;
 
-    img {
-      width: 17px;
-      display: inline-block;
+    span {
+      margin-left: 4px;
       vertical-align: middle;
-      margin-right: 6px;
-      opacity: 0.7;
+      line-height: 35px;
       transition: all 0.2s;
     }
     &:hover {
       color: #161D24;
       font-weight: 500;
       border: 1px solid #161D24;
-
-      img {
-        opacity: 1;
-      }
-      
     }
   `
   const ProdTitle = styled.p`
@@ -317,28 +324,32 @@ export default function Wish() {
           <NoWishes>찜한 상품이 없습니다.</NoWishes>
         ) : (
           <WishList>
-            {wishItems.map((item) => {
-              const isChecked = checkedIds.includes(item.id);
+            {wishItems.map((product) => {
+              const isChecked = checkedIds.includes(product.id);
               const isRecent = (new Date() - new Date(wishItems.date)) < (30 * 24 * 60 * 60 * 1000);
               return (
-                <ProductCard key={item.id}>
+                <ProductCard key={product.id}>
                   <CardCheck>
-                    <input type='checkbox' checked={isChecked} onChange={(e)=>handleSingleCheck(e.target.checked, item.id)}/>
+                    <input type='checkbox' checked={isChecked} onChange={(e)=>handleSingleCheck(e.target.checked, product.id)}/>
                   </CardCheck>
-                  <ImgLink to={`/product/${item.id}`}><ImgBox src={item.image} alt={item.title} />
-                  <WishBtn onClick={(e)=>e.preventDefault()}>
-                    <WishBtnImg src={process.env.PUBLIC_URL + '/images/wishBtn.png'} />
-                  </WishBtn></ImgLink>
-                  <CartBtn onClick={handleCartClick}><img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기'/>담기</CartBtn>
-                  <Link to={`/product/${item.id}`} className='info_link' >
+                  <ImgLink to={`/product/${product.id}`}>
+                    <ImgBox src={product.image} alt={product.title} />
+                    <WishBtn onClick={(e)=>handleWishClick(e, product)}>
+                      <WishBtnImg src={process.env.PUBLIC_URL + '/images/wishBtn-p.png'} />
+                    </WishBtn>
+                  </ImgLink>
+                  <CartBtn onClick={()=>handleCartClick(product)}>
+                    <HiOutlineShoppingBag size={18}/><span>담기</span>
+                  </CartBtn>
+                  <Link to={`/product/${product.id}`} className='info_link' >
                     <div>
-                      <ProdTitle>{item.title}</ProdTitle>
+                      <ProdTitle>{product.title}</ProdTitle>
                       <ProdPrice>
-                        {item.price.toLocaleString()}원
+                        {product.price.toLocaleString()}원
                         {isRecent && <NewBadge>NEW</NewBadge>}
                         </ProdPrice>
                       <TagRow>
-                        {item.tags && item.tags.map((tag, index) => (
+                        {product.tags && product.tags.map((tag, index) => (
                           <TagNum key={index}>{tag}</TagNum>
                         ))}
                       </TagRow>
@@ -350,14 +361,16 @@ export default function Wish() {
           </WishList>
         )} 
       </WishContainer>
-      {popupOpen && popupType === 'cart' && (
+      {popupOpen && (
         <PopupOverlay  onClick={()=> setPopupOpen(false)}>
           <PopupBox onClick={(e)=>e.stopPropagation()}>
             <CloseBtn onClick={() => setPopupOpen(false)}><VscClose size={26}/></CloseBtn>
             <PopupTxt>{popupMessage}</PopupTxt>
-            <GoCartLink to='/cart'>
-              장바구니 보러가기
-            </GoCartLink>
+            {popupType === 'cart' && (
+              <GoCartLink to='/cart'>
+                장바구니 보러가기
+              </GoCartLink>
+            )}
           </PopupBox>
         </PopupOverlay>
       )}

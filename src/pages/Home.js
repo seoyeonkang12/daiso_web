@@ -14,6 +14,7 @@ import Tab from '../components/Tab';
 import { addItem, toggleWish } from './store';
 
 import { VscClose } from "react-icons/vsc";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
 
 export default function Home() {
 
@@ -189,7 +190,7 @@ export default function Home() {
                           </button>
                         </div>
                         <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
-                          <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기'/>담기
+                          <HiOutlineShoppingBag size={18}/><span>담기</span>
                         </button>
                         <Link to={`/product/${product.id}`} key={product.id} className={homeStyle.aLink}>
                           <div className={homeStyle.infoBox}>
@@ -219,14 +220,14 @@ export default function Home() {
         <section className={homeStyle.category}>
           <div className={homeStyle.mainTitle}>
             <div>
-              <span>가장 많이 찾는 상품</span>
+              <span>인기 카테고리 TOP 5</span>
               <p>카테고리 랭킹</p>
             </div>
             <Link to='/category' className={homeStyle.moreBtn}>더보기<img src={process.env.PUBLIC_URL + '/images/more.png'} /></Link>
           </div>
           <div className={homeStyle.tabWidth}>
             <Tab
-              data={rankCategory}
+              data={rankCategory.slice(0, 5)}
               activeTab={activeRankTab}
               setActiveTab={setActiveRankTab}
             />
@@ -247,8 +248,8 @@ export default function Home() {
                     <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                     </button>
                   </div>
-                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
-                    <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} />담기
+                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}>
+                    <HiOutlineShoppingBag size={18}/><span>담기</span>
                   </button>
                   <Link to={`/product/${product.id}`} className={homeStyle.aLink}>
                     <div className={homeStyle.infoBox}>
@@ -287,8 +288,8 @@ export default function Home() {
                     <button className={homeStyle.wishBtn} onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/wishBtn-p.png' : process.env.PUBLIC_URL + '/images/wishBtn.png'} />
                     </button>
                   </div>
-                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}> 
-                    <img src={process.env.PUBLIC_URL + '/images/cartBtn.png'} />담기
+                  <button className={homeStyle.cartBtn} onClick={()=>handleCartClick(product)}>
+                    <HiOutlineShoppingBag size={18}/><span>담기</span>
                   </button>
                   <Link to={`/product/${product.id}`} className={homeStyle.aLink}>
                     <div className={homeStyle.infoBox}>

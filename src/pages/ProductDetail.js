@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState, useRef } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import styled, { keyframes } from 'styled-components';
 import productData from '../data/productData';
 import Accordion from 'react-bootstrap/Accordion';
+import { addItem, toggleWish } from './store';
 
+import { VscClose } from "react-icons/vsc";
 
 const DeliveryOptions = [
   {id: '택배', icon: process.env.PUBLIC_URL + '/images/deliveryB_01.svg', activeIcon: process.env.PUBLIC_URL + '/images/deliveryW_01.svg', label: '택배배송', desc: '평일 3일 이내\n도착예정'},
@@ -16,11 +19,16 @@ const DeliveryOptions = [
 export default function ProductDetail() {
 
   const {id} = useParams();
-  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const wishItems = useSelector((state) => state.wish);
 
   const detailRef = useRef(null);
   const reviewRef = useRef(null);
   const deliveryRef = useRef(null);
+
+  const [popupOpen, setPopupOpen] = useState(false);
+  const [popupMessage, setPopupMessage] = useState('');
+  const [popupType, setPopupType] = useState('');
   
   const product = productData.products?.find((item) => item.id === parseInt(id));
 
@@ -42,10 +50,43 @@ export default function ProductDetail() {
     if(type === 'minus')setQuantity(q=> Math.max(1, q-1));
   };
 
-  const handleAddToCart = () => {
-    if(window.confirm('장바구니에 담겼습니다. 장바구니로 이동하시겠습니까?')) {
-      navigate('/cart');
+  const isWished = wishItems.some(product => product.id === product.id);
+  
+  const triggerPopup = (message, type) => {
+    setPopupMessage(message);
+    setPopupType(type);
+    setPopupOpen(true);
+
+    setTimeout(()=> {
+      setPopupOpen(false);
+    }, 3500);
+  };
+  const handleWishClick = (product) => {
+    const isAlreadyWished = wishItems.some(item => item.id === product.id);
+
+    dispatch(toggleWish({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      tags: product.tags
+    }));
+
+    if(isAlreadyWished) {
+      triggerPopup('찜한 상품에서 제외되었습니다.', '');
+    } else {
+      triggerPopup('찜한 상품에 등록되었습니다.', 'wish');
     }
+  };
+  const handleCartClick = (product) => {
+    dispatch(addItem({
+      id: product.id,
+      title: product.title,
+      price: product.price,
+      image: product.image,
+      count: 1
+    }));
+    triggerPopup('장바구니에 상품이 담겼습니다.', 'cart');
   };
 
   const handleTabClick = (elementRef, tabName) => {
@@ -489,15 +530,12 @@ export default function ProductDetail() {
     margin-bottom: 15px;
   `
   const DeliveryCardBox = styled.div`
-    // display: flex;
-    // justify-content: space-between;
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 8px;
     margin-bottom: 20px;
   `
   const DeliveryCard = styled.div`
-    // width: calc((100% - 30px)/4);
     width: 100%;
     text-align: center; 
     background-color: #F6F6F6;
@@ -529,13 +567,13 @@ export default function ProductDetail() {
       `}
     }
     &:hover {
-      background-color: #161D24;
+      background-color: #E60012;
       color: #fff;
       p {color: #fff;}
       img {filter: brightness(0) invert(1);}
     }
     ${(props)=> props.$isActive && `
-      background-color: #161D24;
+      background-color: #E60012;
       color: #fff;
       img {filter: brightness(0) invert(1);}
     `}
@@ -665,6 +703,66 @@ export default function ProductDetail() {
     color: #333;
     margin-bottom: 0;
     p { margin-bottom: 0; }
+  `
+  const slideUpPopup = keyframes`
+    from {
+      opacity: 0;
+      transform: translate(-50%, -30%);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, -50%);
+    }
+  `
+  const PopupOverlay = styled.div`
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    background-color: rgba(22, 29, 36, 0.5);
+    z-index: 999;
+  `
+  const PopupBox = styled.div`
+    position: fixed;
+    top: 50%; left: 50%;
+    background-color: #fff;
+    border-radius: 5px;
+    width: 350px;
+    padding: 40px 0;
+    animation: ${slideUpPopup} 0.2s ease-out forwards;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  `
+  const PopupTxt = styled.p`
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 0;
+  `
+  const GoCartLink = styled(Link)`
+    display: inline-block;
+    font-size: 14px;
+    text-decoration: none;
+    border-radius: 50px;
+    color: #fff;
+    background-color: #161D24;
+    padding: 5px 15px;
+    margin-top: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      background-color: #E60012;
+      color: #fff;
+    }
+  `
+  const CloseBtn = styled.button`
+    color: #999;
+    position: absolute;
+    top: 15px; right: 15px;
+    transition: all 0.2s;
+
+    &:hover {
+      color: #161D24;
+    }
   `
 
   return (
@@ -857,13 +955,13 @@ export default function ProductDetail() {
             </CountControl>
           </SelectedProductBox>
           <ButtonBox>
-            <HeartBtn><img src={process.env.PUBLIC_URL + '/images/detail_heart.png'} />
+            <HeartBtn onClick={()=>handleWishClick(product)}><img src={isWished ? process.env.PUBLIC_URL + '/images/detail_heart_p.png' : process.env.PUBLIC_URL + '/images/detail_heart.png'} />
               <span>{product.likes >= 9999 ? '9,999+' : product.likes?.toLocaleString()}</span>
             </HeartBtn>
             <ShareBtn><img src={process.env.PUBLIC_URL + '/images/share.png'} />
               <span>{product.shares?.toLocaleString()}</span>
             </ShareBtn>
-            <CartBtn onClick={handleAddToCart}>
+            <CartBtn onClick={()=>handleCartClick(product)}>
               {(product.price * quantity).toLocaleString()}원   장바구니 담기
             </CartBtn>
           </ButtonBox>
@@ -879,6 +977,19 @@ export default function ProductDetail() {
           </DetailInfoBox>
         </RightBox>{/*RightSection*/}
       </DetailBox>
+      {popupOpen && (
+        <PopupOverlay  onClick={()=> setPopupOpen(false)}>
+          <PopupBox onClick={(e)=>e.stopPropagation()}>
+            <CloseBtn onClick={() => setPopupOpen(false)}><VscClose size={26}/></CloseBtn>
+            <PopupTxt>{popupMessage}</PopupTxt>
+            {popupType !== '' && (
+              <GoCartLink to={popupType === 'cart' ? '/cart' : '/wish'} onClick={() => setPopupOpen(false)}>
+                {popupType === 'cart' ? '장바구니 보러가기' : '찜한 상품 보러가기'}
+              </GoCartLink>
+            )}
+          </PopupBox>
+        </PopupOverlay>
+      )}
     </Wrap>
   )
 }

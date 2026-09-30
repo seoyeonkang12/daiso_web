@@ -8,6 +8,7 @@ import productData from '../data/productData';
 import { addItem, toggleWish } from './store';
 
 import { VscClose } from "react-icons/vsc";
+import { HiOutlineShoppingBag } from "react-icons/hi2";
 
 export default function Category() {
 
@@ -165,7 +166,7 @@ export default function Category() {
   `
   const WishBtnImg = styled.img`
     width: 18px;
-    display: inline-block;
+    margin: 0 auto;
   `
   const RankBadge = styled.span`
     position: absolute;
@@ -178,17 +179,8 @@ export default function Category() {
     border-radius: 3px;
     z-index: 10;
   `
-  const CartBtnImg = styled.img`
-    width: 17px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-right: 6px;
-    opacity: 0.7;
-    transition: all 0.2s;
-  `
   const CartBtn = styled.button`
     width: 100%; height: 35px;
-    line-height: 35px;
     border: 1px solid #ddd;
     font-size: 16px;
     color: #666;
@@ -197,14 +189,16 @@ export default function Category() {
     margin-bottom: 10px;
     transition: all 0.2s;
 
+    span {
+      margin-left: 4px;
+      vertical-align: middle;
+      line-height: 35px;
+      transition: all 0.2s;
+    }
     &:hover {
       color: #161D24;
       font-weight: 500;
       border: 1px solid #161D24;
-
-      ${CartBtnImg} {
-        opacity: 1;
-      }
     }
   `
   const ProdTitle = styled.p`
@@ -379,7 +373,7 @@ export default function Category() {
                 </WishBtn>
               </ImageBox>
               <CartBtn onClick={()=>handleCartClick(product)}>
-                <CartBtnImg src={process.env.PUBLIC_URL + '/images/cartBtn.png'} alt='담기' />담기
+                <HiOutlineShoppingBag size={18}/><span>담기</span>
               </CartBtn>
               <ProductCard to={`/product/${product.id}`}>
                 <div>

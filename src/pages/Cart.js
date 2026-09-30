@@ -172,6 +172,8 @@ export default function Cart() {
       font-size: 14px;
       font-weight: 400;
       color: #161D24;
+      text-align: left;
+      line-height: 22px;
     }
   `
   const ProductPrice = styled.div`
