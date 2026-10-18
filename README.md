@@ -13,16 +13,16 @@
 - **프로젝트 유형 :** 개인 프로젝트
 - **개발 기간 :** 2026.09 ~ 2026.09 (약 8일)
 - **담당 역할 :** 기획, UI 디자인, React 개발
-- **주요 기술 :** React, React Router, styled-components, Bootstrap
+- **주요 기술 :** React, React Router DOM
 
 ## 🛠️ 기술 스택
 
-- **Frontend :** React, JavaScript, HTML, CSS
+- **Frontend :** HTML, CSS, JavaScript, React
 - **Routing :** React Router DOM
 - **State Management :** Redux Toolkit, React Redux
 - **Styling :** styled-components, Bootstrap, React Bootstrap
-- **UI Library :** Swiper, React Icons
-- 
+- **Library :** Swiper, React Icons
+
 ## 🎯 프로젝트 목표
 
 - React Router를 활용한 페이지 구성 및 라우팅 구현
@@ -36,6 +36,8 @@
 - 다이소 PICK, 카테고리 랭킹, 신상품 등 주요 영역 배치
 - 주요 상품 페이지로 연결되는 탐색 동선 구성
 
+<!-- 메인 페이지 스크린샷 삽입 -->
+
 ### 2. 상품 목록 및 카테고리
 - 카테고리별 상품 목록 구성
 - 상품 카드 컴포넌트를 활용한 반복 UI 구현
@@ -46,10 +48,14 @@
 - 리뷰 정렬 및 페이지네이션 구현
 - 배송 유형 선택 및 안내 정보 제공
 
+<!-- 상세 페이지 GIF 삽입 -->
+
 ### 4. 장바구니 및 위시리스트
 - 상품 추가·삭제 및 수량 변경
 - 전체·개별 상품 선택 및 일괄 삭제
 - 선택 상품 기준 결제 금액과 배송비 계산
+
+<!-- 장바구니 추가 삭제 GIF 삽입 -->
 
 ### 5. 로그인 및 페이지 이동
 - React Router를 활용한 페이지 간 이동
@@ -57,13 +63,13 @@
 
 ## 💻 핵심 코드 구현
 
-### 1. Redux Toolkit을 활용한 상태 관리
+### 1. Redux Toolkit을 활용한 장바구니 상태 관리
 
-장바구니와 위시리스트 상태를 `Redux Toolkit`으로 관리하여 여러 페이지에서 상품 데이터를 공유하도록 구현했습니다.
+Redux Toolkit을 활용해 장바구니 상품을 관리하고, 동일 상품의 중복 추가를 방지하도록 구현했습니다.
 
 **💡 셀프 코드 리뷰**
 - `findIndex()`로 동일 상품이 있는지 확인
-- 이미 담긴 상품이면 수량 증가
+- 기존 상품이면 수량 증가
 - 새 상품이면 배열 앞에 추가
 
 ~~~javascript
@@ -81,38 +87,76 @@ addItem(state, action) {
 
 ### 2. 선택 상품 기준 결제 금액 계산
 
-선택한 상품만 합산하고, 결제 금액에 따라 배송비가 반영되도록 구현했습니다.
+장바구니에서 선택한 상품의 가격과 수량을 기준으로 상품 금액과 배송비를 계산하도록 구현했습니다.
 
 **💡 셀프 코드 리뷰**
-- filter와 reduce를 활용한 선택 상품 금액 계산
-- 전체 선택 및 개별 선택 상태 관리
-- 30,000원 이상 무료배송, 미만 3,000원 배송비 적용
+- `includes()`로 선택 상품을 판별하고 `reduce()`로 금액 합산
+- 3만 원 이상 구매 시 배송비 무료 처리
+- 상품 금액과 배송비를 합산해 최종 결제 금액 계산
 
-~~~
+~~~javascript
+const totalProductPrice = cartItems.reduce((sum, item) => {
+  if(checkedIds.includes(item.id)) {
+    return sum + ((item.price || 0) * (item.count || 0));
+  } return sum;
+}, 0);
+
+const deliveryPrice = totalProductPrice >= 30000 || totalProductPrice === 0 ? 0 : 3000;
+const totalPayPrice = totalProductPrice + deliveryPrice;
 ~~~
 
 ### 3. React Router를 활용한 상품 상세 페이지
 
-URL의 상품 ID를 기준으로 상품 데이터를 연결하고, 상세 페이지 내 다양한 인터랙션을 구현했습니다.
+URL의 상품 ID를 가져와 해당 상품의 데이터를 연결하고, 상품별 상세 페이지를 구성했습니다.
 
 **💡 셀프 코드 리뷰**
-- useParams를 활용한 URL 파라미터 조회
-- useState를 활용한 이미지 전환 및 상세 정보 표시
-- useRef를 활용한 상세 정보·리뷰·배송 안내 영역 이동
-- 리뷰 정렬 및 페이지네이션 구현
+- `useParams()`로 URL의 상품 ID 가져오기
+- `find()`로 해당 ID와 일치하는 상품 데이터 탐색
+- `useState()`와 `useRef()`를 활용해 상세 페이지의 인터랙션 구현
 
+~~~javascript
+const {id} = useParams();
 
+const product = productData.products?.find(
+  (item) => item.id === parseInt(id)
+);
+~~~
 
 ### 4. 상품 데이터 분리 및 관리
 
-상품 정보, 카테고리, 배너, 상세 이미지, 리뷰 데이터를 productData.js에 분리하여 관리했습니다.
+상품 정보와 카테고리 데이터를 `productData.js`로 분리해 여러 페이지에서 활용할 수 있도록 구성했습니다.
 
 **💡 셀프 코드 리뷰**
-- 상품 정보와 리뷰 데이터를 객체 및 배열로 구성
-- process.env.PUBLIC_URL을 활용한 이미지 경로 관리
+- 상품 정보와 카테고리 데이터를 별도 파일로 관리
+- 상품별 이미지, 가격, 리뷰 등 필요한 데이터 구성
 - 상품 ID를 기준으로 상세 페이지 데이터 연결
 
+~~~javascript
+const productData = {
+  category: [
+    {id: 'single', label: '자취 필수템'},
+    {id: 'house', label: '집꾸미기 아이템'},
+    {id: 'conven', label: '가성비 생활템'},
+    {id: 'popular', label: '요즘 인기있는 아이템'},
+  ],
 
+  products: [
+    {
+      id: 1,
+      category: ['single', 'clean'],
+      image: process.env.PUBLIC_URL + '/images/clean_01.jpg', 
+      title: '배수구망 시트 30매입',
+      price: 1000,
+      tags: ['택배', '픽업', '오늘'],
+      date: '2026-04-28',
+      sales: 4500,
+      inventory: 45,
+      likes: 666,
+      shares: 28,
+    },
+  ],
+};
+~~~
 
 ## 📂 프로젝트 폴더 구조
 
@@ -127,18 +171,22 @@ daiso/
 │       ├── productData.js
 │       ├── userData.js
 │   ├── pages/
+│       ├── About.js
 │       ├── Cart.js
 │       ├── Category.js
 │       ├── Home.js
 │       ├── Login.js
+│       ├── New.js
+│       ├── Notice.js
+│       ├── Pick.js
 │       ├── ProductDetail.js
+│       ├── Soldout.js
 │       ├── Wish.js
 │       ├── home.module.css
 │       ├── store.js
 │       ├── style.css
 │   ├── App.css
 │   ├── App.js
-│   ├── App.test.js
 │   ├── index.css
 │   ├── index.js
 └── package-lock.json
@@ -147,4 +195,8 @@ daiso/
 
 ## 📝 프로젝트 회고
 
-React 기반으로 쇼핑몰을 구현하며 페이지를 컴포넌트 단위로 나누고, 라우팅을 통해 화면을 구성하는 방법을 경험했습니다. 또한 상품 콘텐츠와 공통 UI를 구조화하며, 여러 페이지로 이루어진 웹사이트를 효율적으로 설계하는 과정의 중요성을 배웠습니다.
+이번 프로젝트에서는 React를 활용해 여러 페이지로 구성된 쇼핑몰을 구현하며, 페이지 간 이동과 데이터 연결 방식을 익혔습니다.
+
+장바구니와 위시리스트 기능을 구현하는 과정에서 여러 페이지에서 공유되는 상태를 관리하는 방법을 이해했으며, 상품 데이터를 분리하고 필요한 정보를 각 화면에 연결하면서 데이터 구조가 기능 구현과 유지보수에 미치는 영향을 배웠습니다.
+
+또한 상품 선택에 따른 수량과 결제 금액의 변화를 처리하며, 개별 기능을 구현하는 것뿐 아니라 각 기능이 서로 연결되어 일관되게 동작하도록 구성하는 것이 중요하다는 점을 경험했습니다.
