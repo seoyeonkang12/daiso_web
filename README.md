@@ -1,70 +1,75 @@
-# Getting Started with Create React App
+# 🛍️ DAISO — 다이소 쇼핑몰 리뉴얼
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+> **다이소, 발견하는 재미**
+>
+> 다양한 상품을 쉽고 직관적으로 탐색할 수 있도록 제작한 다이소 쇼핑몰 리뉴얼 프로젝트입니다. React를 활용해 페이지를 구성하고, 상품 카테고리와 신상품 등 주요 콘텐츠를 효율적으로 탐색할 수 있도록 UI를 설계했습니다.
 
-## Available Scripts
+🔗 [DAISO 웹사이트 바로가기](https://seoyeonkang12.github.io/daiso_web/)
 
-In the project directory, you can run:
+## 📌 프로젝트 개요
 
-### `npm start`
+다이소 쇼핑몰의 상품 탐색 경험을 개선하는 것을 목표로 진행한 웹사이트 리뉴얼 프로젝트입니다. 상품과 콘텐츠를 목적에 따라 구분하고, 주요 페이지를 직관적으로 탐색할 수 있도록 화면을 구성했습니다.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **프로젝트 유형 :** 개인 프로젝트
+- **개발 기간 :** 2026.09 ~ 2026.09 (약 8일)
+- **담당 역할 :** 기획, UI 디자인, React 개발
+- **주요 기술 :** React, React Router, styled-components, Bootstrap
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 🎯 프로젝트 목표
 
-### `npm test`
+- 상품 탐색 흐름을 고려한 쇼핑몰 UI 구성
+- React Router를 활용한 페이지 간 이동 구현
+- 공통 UI 요소를 컴포넌트로 구성해 코드 재사용성 향상
+- 상품 데이터를 활용한 목록 및 상세 콘텐츠 구현
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠️ 기술 스택
 
-### `npm run build`
+- **Frontend :** React
+- **Routing :** React Router
+- **Styling :** styled-components
+- **Data :** 실제 사용한 데이터 관리 방식 기입
+- **State Management :** 실제 사용한 상태 관리 방식 기입
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## ✨ 주요 기능
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### 1. 메인 페이지
+- 메인 비주얼 및 주요 상품 콘텐츠 구성
+- 다이소 PICK, 카테고리 랭킹, 신상품 등 주요 영역 배치
+- 상품 탐색을 위한 콘텐츠 섹션 구성
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+### 2. 상품 목록 및 카테고리
+- 카테고리별 상품 목록 구성
+- 상품 카드 컴포넌트를 활용한 반복 UI 구현
+- 신상품 및 추천 상품 콘텐츠 제공
 
-### `npm run eject`
+### 3. 상품 상세 페이지
+- 상품 이미지와 상세 정보 표시
+- 상품 목록에서 상세 페이지로 이동
+- 상품별 데이터를 활용한 콘텐츠 표시
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+### 4. 공통 UI 및 페이지 라우팅
+- React Router를 활용한 페이지 이동
+- 공통 레이아웃 및 UI 컴포넌트 구성
+- styled-components를 활용한 컴포넌트별 스타일 관리
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+## 💻 핵심 코드 구현
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 1. React Router를 활용한 페이지 구성
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+페이지별 경로를 설정하고, 각 경로에 해당하는 컴포넌트를 렌더링하도록 구성했습니다.
 
-## Learn More
+### 2. 공통 컴포넌트 설계
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+반복되는 상품 카드와 공통 UI 요소를 컴포넌트로 분리해 코드 중복을 줄이고 유지보수하기 쉬운 구조를 구성했습니다.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 3. 상품 데이터 관리
 
-### Code Splitting
+상품 정보를 일관된 구조로 관리하고, 상품 목록과 상세 페이지에서 필요한 데이터를 활용하도록 구현했습니다.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📂 프로젝트 폴더 구조
 
-### Analyzing the Bundle Size
+실제 프로젝트 폴더 구조를 기준으로 작성
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 📝 프로젝트 회고
 
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+React 기반으로 쇼핑몰을 구현하며 페이지를 컴포넌트 단위로 나누고, 라우팅을 통해 화면을 구성하는 방법을 경험했습니다. 또한 상품 콘텐츠와 공통 UI를 구조화하며, 여러 페이지로 이루어진 웹사이트를 효율적으로 설계하는 과정의 중요성을 배웠습니다.
