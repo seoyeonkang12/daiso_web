@@ -36,21 +36,21 @@
 - 다이소 PICK, 카테고리 랭킹, 신상품 등 주요 영역 배치
 - 주요 상품 페이지로 연결되는 탐색 동선 구성
 
-https://github.com/user-attachments/assets/6e722368-4e89-45cc-b764-1bdca973b45b
+https://github.com/user-attachments/assets/d6176485-5205-433d-a54c-00ecfb7b527d
 
 ### 2. 상품 목록 및 카테고리
 - 카테고리별 상품 목록 구성
 - 상품 카드 컴포넌트를 활용한 반복 UI 구현
 - 신상품 및 추천 상품 콘텐츠 제공
 
-https://github.com/user-attachments/assets/74d8cd71-3c45-4c24-b55f-cf9c104da846
+https://github.com/user-attachments/assets/51deeb74-0ab1-4287-8ffa-f95e22cee109
 
 ### 3. 상품 상세 페이지
 - 상품 이미지 전환 및 상세 정보 펼치기
 - 리뷰 정렬 및 페이지네이션 구현
 - 배송 유형 선택 및 안내 정보 제공
 
-https://github.com/user-attachments/assets/8eeb87f0-4979-41c0-8078-e604ce3ef61c
+https://github.com/user-attachments/assets/d69626de-520d-4e9b-b813-2f6ad2fca278
 
 ### 4. 장바구니 및 위시리스트
 - 상품 추가·삭제 및 수량 변경
@@ -63,9 +63,7 @@ https://github.com/user-attachments/assets/493be267-ceaa-4146-81f8-c487342072a0
 - React Router를 활용한 페이지 간 이동
 - sessionStorage 기반 로그인 상태 확인 및 로그아웃
 
-
-
-
+https://github.com/user-attachments/assets/a0478509-a5e9-4666-852e-ce1268fc20cd
 
 ## 💻 핵심 코드 구현
 
